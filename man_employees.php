@@ -10,6 +10,14 @@
             background-color: #FFFDF1;
         }
 
+        .container {
+            margin-top: 20px;
+        }
+
+        .employee-list {
+            border: 1px solid #ccc;
+        }
+
         #employee-details-container {
             border: 1px solid #ccc;
             padding: 10px;
@@ -96,9 +104,9 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
                 <div class="container">
-                    <h3>Add Employee</h3
+                    <h3>Add Employee</h3>
                     <!--Add employee form-->
                     <div class="form-content">
                     <form action="add_employee.php" method="POST">
@@ -147,22 +155,17 @@
                 </div>
             </div>
 
-            <!--vertical dividor-->
-            <div class="col-1 vertical-line"></div>
-
-
-
-
-            <div class="col-5">
-            <div class="container text-center">
-                    <div class="col-md-6">
-                    <h3>Remove Employee</h3>
-                    <!--Employee list from managers branch-->
-                    <ul class="employee-list" id="employee-list">
-                    </ul>
-                    <button id="remove-button" class="btn btn-danger mt-3">Remove</button>
+            <div class="col-md-8">
+                <div class="row">
+                <h3>Remove Employee</h3>
+                    <div class="col-md-4">
+                       
+                        <!--Employee list from managers branch-->
+                        <ul class="employee-list" id="employee-list">
+                        </ul>
+                        <button id="remove-button" class="btn btn-danger mt-3">Remove</button>
                     </div>
-                    <div class="employee-details-container" id="employee-details-container">
+                    <div class="col-md-4" id="employee-details-container">
                         <h4>Employee Details</h4>
                         <p> Select an employee to view details.</p>
                     </div>
@@ -236,7 +239,6 @@
 
         // Function to toggle the highlight of the selected employee
         function toggleHighlightEmployee(selectedEmployee, employeeName) {
-            var selectedEmployee = event.currentTarget;
 
             // Check if the selected employee is already highlighted
             var isHighlighted = selectedEmployee.classList.contains("active");
@@ -251,21 +253,26 @@
             if (!isHighlighted) {
                 selectedEmployee.classList.add("active");
             }
-            var detailsContainer = document.getElementById("employee-details-container");
-            detailsContainer.innerHTML = "<h4>Details for " + employeeName + "</h4><p>Loading...</p>";
         }
 
         function fetchEmployeeDetails(employeeName){
-            var xhr = new XMLHTTPRequest();
-            xhr.open("GET", "employee_details.php?name="+encodeURIComponent(employeeName), true);
+            var detailsContainer = document.getElementById("employee-details-container");
+            detailsContainer.innerHTML = "<h4>Details for " + employeeName + "</h4><p>Loading...</p>";
 
-            xhr.onreadystatechange = function () {
-                if(xhr.readyState == 4 && xhr.status == 200){
-                    var detailsContainer = document.getElementById("employee-details-container");
-                    detailsContainer.innerHTML = "<h4>Details for " + employeeName + "</h4><p>" + xhr.responseText + "</p>";
-                }
-            };
-            xhr.send();
+            fetch("employee_details.php?name="+encodeURIComponent(employeeName))
+                .then(response => {
+                    if(!response.ok){
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    detailsContainer.innerHTML = "<h4>Details for " + employeeName + "</h4><p>"+data+"</p>";
+                })
+                .catch(error => {
+                    console.error("Error fetching employee details:", error);
+                    detailsContainer.innerHTML = "<h4>Error</h4><p>Failed to fetch employee details.</p>";
+                })
         }
 
         // Function to log details of the selected employee
@@ -276,30 +283,34 @@
             if (selectedEmployee) {
                 var employeeDetails = selectedEmployee.textContent.trim();
                 var isConfirmed = confirm("Are you sure you want to remove: " + employeeDetails);
-                if(isConfirmed){
-                    console.log("Removed: "+employeeDetails);
+
+                if (isConfirmed) {
+                    console.log("Removed: " + employeeDetails);
                     selectedEmployee.classList.remove("active");
 
-                    var xhr = new XMLHttpRequest();
-
-                    xhr.open("POST", "remove_employee.php", true);
-                    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-
-                    xhr.onreadystatechange = function () {
-                        if(xhr.readystate == 4 && xhr.status == 200){
-                            console.log(xhr.responseText);
+                    fetch("remove_employee.php", {
+                        method: "POST",
+                        headers: {
+                            "Content-type": "application/x-www-form-urlencoded"
+                        },
+                        body: "employeeDetails=" + encodeURIComponent(employeeDetails)
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
                         }
-                    };
-
-                    var data = "employeeDetails="+employeeDetails;
-                    xhr.send();
-
-                }
-                else{
+                        return response.text();
+                    })
+                    .then(data => {
+                        console.log(data);
+                    })
+                    .catch(error => {
+                        console.error("Error during fetch operation:", error);
+                    });
+                } else {
                     console.log("Removal Cancelled");
                 }
-            }
-            else{
+            } else {
                 console.log("No employee selected.");
             }
         }
