@@ -16,23 +16,6 @@
             padding: 0;
         }
 
-        .hero {
-            background: url('pub_photo.png') no-repeat center center;
-            padding: 250px 0;
-            background-size: cover;
-            text-align: center;
-            
-        }
-
-        .hero h1 {
-            font-size: 2.5rem;
-        }
-
-        .sub-hero {
-            text-align: center;
-            color: #000;
-        }
-
         .sub-header {
             background-color: #FFFDF1;
             padding: 15px 0;
@@ -77,28 +60,39 @@
 
     <!-- Sub Header -->
     <div class="sub-header">
-        <h4>About Us</h4>
+        <h4>Log in</h4>
+    </div>
+
+    <!-- Pagination -->
+    <div class="container my-3">
+    
+    </div>
+
+    <!--Login form-->
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-12">
+                <div class="form-content">
+                    <form action="verify.php" method="POST">
+                        Username:
+                        <input type="text" name="uname">
+                        <br>
+                        <br>
+                        Password: 
+                        <input type="password" name="pword">
+                        <br>
+                        <br>
+                        <?php if(isset($_GET["msg"]) && $_GET["msg"] == "unauth"){
+                            echo "Incorrect username or password...";
+                        }?>
+                        <input type="submit" value="submit">
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 
 
-    <!-- Hero -->
-    <section class="hero">
-        <div class="container">
-        </div>
-    </section>
-
-    <br>
-
-    <section class="container">
-        <div class="sub-hero">
-            <h4>Welcome to The Toe</h4>
-            <h5>The Herds all here, Cheers M' Dear</h5>
-            <br>
-            <h5>Come in, pull up a pew. We have the finest selection of local craft brews and the classic staples. We have been serving the public with a cosy atmosphere and ice cold pints for the 
-                past 20 years. See something you like? Simply order to your table through our website or head up to the bar! 
-            </h5>
-        </div>
-    </section>
 
     <!-- Pagination -->
     <div class="container my-3">
