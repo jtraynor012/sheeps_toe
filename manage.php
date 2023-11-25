@@ -1,3 +1,20 @@
+<?php
+ob_start();
+session_start();
+
+error_reporting(E_ALL & ~E_WARNING);
+ini_set('display_errors', 1);
+if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
+    header("location: login.php");
+}
+if(isset($_GET["logout"])){
+    unset($_SESSION['user']);
+    unset($_SESSION['branch']);
+    unset($_SESSION['role']);
+    header("location: login.php");
+}
+ob_flush();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,14 +50,6 @@
     </style>
 </head>
 <body>
-    <?php
-        ob_start();
-        session_start();
-        if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
-            header("location: login.php");
-        }
-    ?>
-
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light">
         <a class="navbar-brand" href="Home.html">The Sheep's Toe</a>
@@ -65,14 +74,6 @@
             </ul>
         </div>
     </nav>
-    <?php
-    if(isset($_GET["logout"])){
-            unset($_SESSION['user']);
-            unset($_SESSION['branch']);
-            unset($_SESSION['role']);
-            header("location: login.php");
-        }
-    ?>
     <!-- Sub Header -->
     <div class="sub-header">
         <h4>Welcome <?php echo $_SESSION['user']?> - Manager Access</h4>

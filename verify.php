@@ -1,6 +1,7 @@
 <?php
-        include "db.php";
         session_start();
+        include "db.php";
+        
 
             $uname=$_POST['uname'];
             $pword=$_POST['pword'];
@@ -33,7 +34,8 @@
                 if($result > 0){
                     foreach($result as $row){
                         $_SESSION['user'] = $row['FirstName'];
-                        header("location: order.php"); 
+                        header("location: order.php");
+                        exit;
                     }
                 }
             }
@@ -65,12 +67,14 @@
                                 $_SESSION['role'] = $row['Role'];
                                 $_SESSION['branch'] = $row['BranchID'];
                                 header("location: manage.php");
+                                exit;
                             }
                             else{
                                 $_SESSION['user'] = $row['FirstName'];
                                 $_SESSION['role'] = $row['Role'];
                                 $_SESSION['branch'] = $row['BranchID'];
-                                header("location: order.php"); 
+                                header("location: order.php");
+                                exit;
                             }
                         }
                     }
@@ -80,5 +84,6 @@
 
             if(!$staff_auth && !$cust_auth){
                 header("location: login.php?msg=unauth");
+                exit;
             }
     ?>

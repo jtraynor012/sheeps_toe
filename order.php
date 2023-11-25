@@ -118,54 +118,21 @@
         </div>
     </section>
 
-    <!-- Menu Section -->
-    <section class="container mt-5">
-        <div class="row mt-5">
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 1 Content Here -->
+    <section>
+        <div class="container mt-5">
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <ul class="categories" id="categories">
+                    </ul>
+                </div>
+                <div class="col-md-8">
+                    <ul class="products" id="products">
+                    </ul>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 2 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 1 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 2 Content Here -->
-                </div>
-            </div>
-          </div>
-          <div class="row mt-5">
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 3 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 4 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 1 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 2 Content Here -->
-                </div>
-            </div>
-          </div>
-    </section>
-
+        </div>
+    </section> 
+    
     <!-- Pagination -->
     <div class="container my-3">
         <ul class="pagination justify-content-center">

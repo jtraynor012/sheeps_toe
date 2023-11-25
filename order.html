@@ -41,6 +41,27 @@
             padding: 100px;
             border-radius: 10px;
         }
+        .product-container,
+        .basket-container {
+            display: none;
+        }
+
+        .basket-icon {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        .basket-container {
+            position: fixed;
+            top: 50px; /* Adjust as needed */
+            right: 10px;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            padding: 10px;
+            max-width: 200px;
+        }
     </style>
 </head>
 <body>
@@ -102,53 +123,36 @@
         </div>
     </section>
 
-    <!-- Menu Section -->
-    <section class="container mt-5">
-        <div class="row mt-5">
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 1 Content Here -->
+    <section>
+        <div class="container mt-5">
+            <div class="row mt-5">
+                <div class="col-md-4">
+                    <div class="categories list-group" id="categories">
+                        <button class="list-group-item" onclick="getProducts('Draught')">Draught</li>
+                        <button class="list-group-item" onclick="getProducts('Bottles')">Bottles</li>
+                        <button class="list-group-item" onclick="getProducts('Vodka')">Vodka</li>
+                        <button class="list-group-item" onclick="getProducts('Gins')">Gin</li>
+                        <button class="list-group-item" onclick="getProducts('Rum')">Rum</li>
+                        <button class="list-group-item" onclick="getProducts('Snacks')">Snacks</li>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="products list-group" id="products">
+                    </div>
                 </div>
             </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 2 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 1 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 2 Content Here -->
-                </div>
-            </div>
-          </div>
-          <div class="row mt-5">
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 3 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 4 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 1 Content Here -->
-                </div>
-            </div>
-            <div class="col-3">
-                <div class="menu-item">
-                    <!-- Your Product 2 Content Here -->
-                </div>
-            </div>
-          </div>
-    </section>
+        </div>
+    </section> 
+
+    <!-- Basket Icon -->
+    <div class="basket-icon" onclick="showBasket()">🛒</div>
+
+    <!-- Basket Section -->
+    <div id="basket" class="container mt-5 basket-container">
+        <!-- Basket contents will be dynamically added here -->
+        <button onclick="showCategories()">Back to Categories</button>
+        <a href="#">Go to Checkout</a>
+    </div>
 
     <!-- Pagination -->
     <div class="container my-3">
@@ -168,5 +172,68 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+
+
+
+        function getProducts(category) {
+            console.log(category);
+            fetch("getProduct.php?product="+encodeURIComponent(category))
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    console.log(response.text());
+                    showProducts(response.text());
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error("Error during fetch operation:", error);
+                });
+        }
+
+        //FINISH THIS FUNCTION!!!!
+        function showProducts(products){
+            product_area = document.getElementById("products");
+            const product_list = products.split(":");
+            product_list.forEach(product => {
+                console.log(product);
+                const product_details = product.split(",");
+                var product_button = document.createElement("button");
+                product_button.classList.add("list-group-item");
+                product_button.textContent = product.trim();
+                product_area.appendChild(product_button);
+            })
+
+        }
+
+        function addToBasket(name, price) {
+            const basket = document.getElementById('basket');
+            const basketItem = document.createElement('p');
+            basketItem.textContent = `${name} - £${price}`;
+            basket.appendChild(basketItem);
+        }
+
+        function showCategories() {
+            document.getElementById('categories').style.display = 'flex';
+            document.getElementById('products').innerHTML = '';
+        }
+
+        function showBasket() {
+            document.getElementById('categories').style.display = 'none';
+            document.getElementById('products').innerHTML = '';
+            document.getElementById('basket').style.display = 'block';
+            document.getElementById('checkout').style.display = 'none';
+        }
+
+        function showCheckout() {
+            document.getElementById('categories').style.display = 'none';
+            document.getElementById('products').innerHTML = '';
+            document.getElementById('basket').style.display = 'none';
+            document.getElementById('checkout').style.display = 'block';
+        }
+    </script>
 </body>
 </html>

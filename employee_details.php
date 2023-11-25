@@ -16,7 +16,7 @@
             $dob = date('Y-m-d', strtotime($row['DOB']));
             $startdate = date('Y-m-d', strtotime($row['DateEmployed']));
 
-            echo "BranchID: ".$row['BranchID']."<br>StaffID: ".$row['StaffID']."<br>First Name: ".$row['FirstName']."<br>Last Name: ".$row['LastName']."<br>Date of Birth: ".$dob."<br>Date Started: ".$startdate."<br>Email Address: ".$row['EmailAddress']."<br>Role: ".$row['Role']."<br>Salary: £".$row['Salary'];
+            echo "BranchID: ".$row['BranchID']."<br>StaffID: ".$row['StaffID']."<br>First Name: ".$row['FirstName']."<br>Last Name: ".$row['LastName']."<br>Date of Birth: ".$dob."<br>Date Started: ".$startdate."<br>Email Address: ".$row['EmailAddress']."<br>Phone Number: ".$row['PhoneNumber']."<br>Role: ".$row['Role']."<br>Salary: £".$row['Salary'];
         }
     } catch(PDOException $e){
         echo $sql . "<br>" . $e->getMessage();

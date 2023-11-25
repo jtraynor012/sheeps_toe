@@ -16,17 +16,12 @@
 
         .employee-list {
             border: 1px solid #ccc;
+            margin: 0px;
+            padding: 0px;
         }
 
         #employee-details-container {
             border: 1px solid #ccc;
-            padding: 10px;
-            margin-left: 10px;
-        }
-
-        .vertical-line{
-            border-left: 1px solid #e0e0e0;
-            height: 100%;
         }
 
         .navbar {
@@ -104,12 +99,12 @@
 
     <div class="container">
         <div class="row">
-            <div class="col-4">
+            <div class="col-5">
                 <div class="container">
                     <h3>Add Employee</h3>
                     <!--Add employee form-->
                     <div class="form-content">
-                    <form action="add_employee.php" method="POST">
+                    <form action="add_employee.php" id="add_employee" method="POST">
                         First Name:
                         <input type="text" name="first_name" required>
                         <br>
@@ -126,7 +121,7 @@
                         <input type="date" name="start_date" required>
                         <br>
                         <br>
-                        Phone Number:
+                        Phone Number[xxx-xxxx]:
                         <input type="tel" name="phone_number" pattern="[0-9]{3}-[0-9]{4}" required>
                         <br>
                         <br>
@@ -154,21 +149,33 @@
                 </div>
                 </div>
             </div>
+            <?php
+                if(isset($_GET['email_repeat'])){
+                    echo "<script>alert('Email already in use!');
+                            document.getElementById('add_employee').reset();";
+                }
+                if(isset($_GET['phone_repeat'])){
+                    echo "<script>alert('Phone Number already in use!');
+                            document.getElementById('add_employee').reset();";
+                }
+            
+            ?>
 
-            <div class="col-md-8">
+            <div class="col-md-7">
+            <h3 class="text-center">Remove Employee</h3>
                 <div class="row">
-                <h3>Remove Employee</h3>
-                    <div class="col-md-4">
-                       
+                    <div class="col-md-6">
                         <!--Employee list from managers branch-->
                         <ul class="employee-list" id="employee-list">
                         </ul>
-                        <button id="remove-button" class="btn btn-danger mt-3">Remove</button>
                     </div>
-                    <div class="col-md-4" id="employee-details-container">
+                    <div class="col-md-6" id="employee-details-container">
                         <h4>Employee Details</h4>
                         <p> Select an employee to view details.</p>
                     </div>
+                </div>
+                <div class="row justify-content-center mt-3">
+                    <button id="remove-button" class="btn btn-danger mt-3 text-center">Remove</button>
                 </div>
             </div>
         </div>
@@ -253,6 +260,11 @@
             if (!isHighlighted) {
                 selectedEmployee.classList.add("active");
             }
+            else{
+                selectedEmployee.classList.remove("active");
+                var detailsContainer = document.getElementById("employee-details-container");
+                detailsContainer.innerHTML = "<h4>Details for " + employeeName + "</h4><p>Loading...</p>";
+            }
         }
 
         function fetchEmployeeDetails(employeeName){
@@ -300,6 +312,7 @@
                             throw new Error("Network response was not ok");
                         }
                         return response.text();
+                        
                     })
                     .then(data => {
                         console.log(data);
