@@ -132,7 +132,7 @@
                         <button class="list-group-item" onclick="getProducts('Bottles')">Bottles</li>
                         <button class="list-group-item" onclick="getProducts('Vodka')">Vodka</li>
                         <button class="list-group-item" onclick="getProducts('Gins')">Gin</li>
-                        <button class="list-group-item" onclick="getProducts('Rum')">Rum</li>
+                        <button class="list-group-item" onclick="getProducts('Rums')">Rum</li>
                         <button class="list-group-item" onclick="getProducts('Snacks')">Snacks</li>
                     </div>
                 </div>
@@ -175,13 +175,11 @@
     <script>
         //FINISH THIS FUNCTION!!!!
         function showProducts(products){
-            console.log("in showProducts Function");
-            console.log(products);
             product_area = document.getElementById("products");
-            const product_list = products.split("!");
+            const product_list = products.split("!").filter(p=>p);
             product_list.forEach(product => {
-                console.log(product);
-                const product_details = product.split(",");
+                const product_details = product.split("$");
+                console.log(product_details);
                 var product_button = document.createElement("button");
                 product_button.classList.add("list-group-item");
                 product_button.textContent = product.trim();
@@ -192,14 +190,13 @@
             console.log(category);
             fetch(`getProduct.php?product='${category}'`)
                 .then(response => {
-                    console.log(response);
                     if (!response.ok) {
                         throw new Error("Network response was not ok");
                     }
                     return response.text();
                 })
                 .then(data => {
-                    console.log(data);
+                    showProducts(data);
                 })
                 .catch(error => {
                     console.error("Error during fetch operation:", error);
