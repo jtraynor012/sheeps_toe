@@ -200,6 +200,8 @@
                 })
                 .then(data => {
                     console.log(data);
+                    const products = data.split("!");
+                    showProducts(products);
                 })
                 .catch(error => {
                     console.error("Error during fetch operation:", error);
