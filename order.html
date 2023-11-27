@@ -175,9 +175,10 @@
     <script>
         //FINISH THIS FUNCTION!!!!
         function showProducts(products){
+            console.log("in showProducts Function");
             console.log(products);
             product_area = document.getElementById("products");
-            const product_list = products.split(":");
+            const product_list = products.split("!");
             product_list.forEach(product => {
                 console.log(product);
                 const product_details = product.split(",");
