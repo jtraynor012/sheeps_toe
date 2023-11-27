@@ -173,31 +173,12 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-
-
-
-        function getProducts(category) {
-            console.log(category);
-            fetch("getProduct.php?product="+encodeURIComponent(category))
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    console.log(response.text());
-                    showProducts(response.text());
-                })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => {
-                    console.error("Error during fetch operation:", error);
-                });
-        }
-
         //FINISH THIS FUNCTION!!!!
         function showProducts(products){
+            console.log("in showProducts Function");
+            console.log(products);
             product_area = document.getElementById("products");
-            const product_list = products.split(":");
+            const product_list = products.split("!");
             product_list.forEach(product => {
                 console.log(product);
                 const product_details = product.split(",");
@@ -206,7 +187,23 @@
                 product_button.textContent = product.trim();
                 product_area.appendChild(product_button);
             })
-
+        }
+        function getProducts(category) {
+            console.log(category);
+            fetch(`getProduct.php?product='${category}'`)
+                .then(response => {
+                    console.log(response);
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => {
+                    console.error("Error during fetch operation:", error);
+                });
         }
 
         function addToBasket(name, price) {
