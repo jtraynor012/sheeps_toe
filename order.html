@@ -189,18 +189,17 @@
             })
         }
         function getProducts(category) {
-            console.log("HELLO WORLD!!!");
             console.log(category);
-            fetch("getProduct.php?product="+encodeURIComponent(category))
+            fetch(`getProduct.php?product='${category}'`)
                 .then(response => {
+                    console.log(response);
                     if (!response.ok) {
                         throw new Error("Network response was not ok");
                     }
-                    console.log(response.text());
-                    showProducts(response.text());
+                    return response.text();
                 })
                 .then(data => {
-                    console.log(data + "Hello World");
+                    console.log(data);
                 })
                 .catch(error => {
                     console.error("Error during fetch operation:", error);
