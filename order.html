@@ -175,8 +175,7 @@
     <script>
         //FINISH THIS FUNCTION!!!!
         function showProducts(products){
-            console.log("Hello World");
-            console.log(products)
+            console.log(products);
             product_area = document.getElementById("products");
             const product_list = products.split(":");
             product_list.forEach(product => {
@@ -189,7 +188,8 @@
             })
         }
         function getProducts(category) {
-            console.log(category + "Hello Boss");
+            console.log("HELLO WORLD!!!");
+            console.log(category);
             fetch("getProduct.php?product="+encodeURIComponent(category))
                 .then(response => {
                     if (!response.ok) {
