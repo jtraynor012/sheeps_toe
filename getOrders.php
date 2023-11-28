@@ -6,12 +6,31 @@
     $response = "";
     $currentOrders = "";
 
-    try {
+    function getOrders($branch,$mysql){
         $getOrders = "SELECT OrderID, TableNumber FROM ORDERS WHERE BranchID = $branch AND `Status` = 'In progress'";
         $stmt = $mysql->prepare($getOrders);
         $stmt->execute();
         $getOrders = $stmt->fetchAll();
-        foreach($getOrders as $row) {
+        return $getOrders;
+    }
+    function getProductName($productID,$mysql){
+        try{
+            $getProductName = "SELECT ProductName FROM PRODUCTS WHERE ProductID = $productID";
+            $stmt = $mysql->prepare($getProductName);
+            $stmt->execute();
+            $getProductNames = $stmt->fetchAll();
+            $productName = "";
+            foreach($getProductNames as $row){
+                $productName = $row['ProductName'];
+            }
+            return $productName;
+        } catch(PDOException $e){
+            echo "getProductName Failure:" . "<br>" . $e->getMessage();
+        }
+    }
+    try {
+        $orders = getOrders($branch,$mysql);
+        foreach($orders as $row) {
             $currentOrders .= $row['OrderID']."$".$row['TableNumber']."!";
         }
         $splitOrders = explode("!", $currentOrders);
@@ -24,7 +43,8 @@
             $stmt->execute();
             $getOrderItems = $stmt->fetchAll();
             foreach($getOrderItems as $OrderItems){
-                $response .= $OrderItems['OrderID']."$".$OrderItems['ProductID']."$".$OrderItems['Quantity']."!";
+                $productName = getProductName($OrderItems['ProductID'],$mysql);
+                $response .= $OrderItems['OrderID']."$".$tableNumber."$".$productName."$".$OrderItems['Quantity']."!";
             }
         }
         echo $response;
