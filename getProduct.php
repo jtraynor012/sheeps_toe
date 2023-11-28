@@ -6,12 +6,12 @@
     $response = "";
 
     try {
-        $query = "SELECT ProductID, Price, ProductImage FROM PRODUCTS WHERE ProductType = $category";
+        $query = "SELECT ProductName, Price, ProductImage FROM PRODUCTS WHERE ProductType = $category";
         $stmt = $mysql->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll();
         foreach($result as $row) {
-            $response .= $row['ProductID']."$".$row['Price']."$".$row['ProductImage']."!"; // Use .= for string concatenation
+            $response .= $row['ProductName']."$".$row['Price']."$".$row['ProductImage']."!"; // Use .= for string concatenation
         }
         echo $response;
     } catch (PDOException $e) {
