@@ -294,6 +294,25 @@
             return product ? product.quantity : 0;
         }
 
+        // https://codedamn.com/news/javascript/post-request-http how i send the data.. 
+        function sendOrder(orderData) {
+            fetch('addOrder.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type':'application/json'
+                },
+                body: JSON.stringify(orderData),
+            })
+            .then((response)=>{
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                } else {
+                    return response.json();
+                }
+            })
+            .then((data)=>console.log("Success:",data))
+            .catch((error)=>console.error("Error:",error));
+        }
 
         //pass chechout details to database
         //->insert statement to go into database
@@ -306,12 +325,14 @@
             const tableNumber = $('#table-number').val();
             const branch = $('#branch-select').val();
 
-            // You can perform further actions with the selectedProducts array, such as displaying a summary or navigating to a checkout page
-            console.log("Selected Products:", selectedProducts);
-            console.log("Checkout Date: ", currentDate);
-            console.log("Table Number: ", tableNumber);
-            console.log("Branch: ", branch);
-
+            const orderData = {
+                selectedProducts,
+                currentDate,
+                tableNumber,
+                branch
+            };
+            console.log("orderData: " + orderData);
+            sendOrder(orderData);
             // For example, clear the basket after checkout
             productQuantities.length = 0;
             updateBasketDisplay();
