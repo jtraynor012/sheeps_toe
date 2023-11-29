@@ -312,6 +312,7 @@
             })
             .then((data)=>console.log("Success:",data))
             .catch((error)=>console.error("Error:",error));
+            console.log(JSON.stringify(orderData));
         }
 
         //pass chechout details to database
@@ -324,10 +325,17 @@
             const currentDate = new Date().toISOString().slice(0, 19).replace('T', ' ');
             const tableNumber = $('#table-number').val();
             const branch = $('#branch-select').val();
-
+            const customerID = 2;
+            
+            let stringProducts = "";
+            console.log("selectedProducts: ", selectedProducts);
+            for (let i = 0; i<selectedProducts.length;i++){
+                stringProducts += selectedProducts[i]['id'] + "$" + selectedProducts[i]['quantity'] + "!";
+            }
             const orderData = {
-                selectedProducts,
+                stringProducts,
                 currentDate,
+                customerID,
                 tableNumber,
                 branch
             };
