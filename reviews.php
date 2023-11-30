@@ -1,20 +1,3 @@
-<?php
-ob_start();
-session_start();
-
-error_reporting(E_ALL & ~E_WARNING);
-ini_set('display_errors', 1);
-if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
-    header("location: login.php");
-}
-if(isset($_GET["logout"])){
-    unset($_SESSION['user']);
-    unset($_SESSION['branch']);
-    unset($_SESSION['role']);
-    header("location: login.php");
-}
-ob_flush();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,6 +14,23 @@ ob_flush();
             background-color: #FFFDF1;
             border-bottom: 4px solid #000;
             padding: 0;
+        }
+
+        .hero {
+            background: url('pub_photo.png') no-repeat center center;
+            padding: 250px 0;
+            background-size: cover;
+            text-align: center;
+            
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .sub-hero {
+            text-align: center;
+            color: #000;
         }
 
         .sub-header {
@@ -69,41 +69,27 @@ ob_flush();
                     <a class="nav-link" href="contact.html">Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="?logout"><?php echo $_SESSION['user']?> - Logout</a>
+                    <a class="nav-link" href="login.php">Log in </a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="reviews.php">Reviews</a>
+                </li>  
             </ul>
         </div>
     </nav>
+
     <!-- Sub Header -->
     <div class="sub-header">
-        <h4>Welcome <?php echo $_SESSION['user']?> - Manager Access</h4>
-    </div>
-
-    <!-- Pagination -->
-    <div class="container my-3">
-    
-    </div>
-
-    <div class="container text-center">
-        <ul class="navbar-nav ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="man_employees.php">Manage Employees</a>
-            </li>
-            <li class="nav item">
-                <a class="nav-link" href="#">View Orders</a>
-            </li>
-            <li class="nav item">
-                <a class="nav-link" href="#">Manage Products</a>
-            </li>
-            <li class="nav item">
-                <a class="nav-link" href="viewTotals.php">View Totals</a>
-            </li>
-        </ul>
-
+        <h4>Reviews</h4>
     </div>
 
 
+    <div class="container">
+        <div class="row">
+            <ul></ul>
 
+        </div>
+    </div>
 
     <!-- Pagination -->
     <div class="container my-3">
@@ -121,11 +107,3 @@ ob_flush();
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-
-    
-
-
-
-
-
