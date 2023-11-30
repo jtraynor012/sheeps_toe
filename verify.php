@@ -26,7 +26,7 @@
             }
 
             if($cust_auth){
-                $query = "SELECT FirstName FROM CUSTOMERS WHERE CustomerID = $Cust_ID";
+                $query = "SELECT FirstName, CustomerID FROM CUSTOMERS WHERE CustomerID = $Cust_ID";
                 $stmt = $mysql->prepare($query);
                 $stmt->execute();
                 $result = $stmt->fetchAll();
@@ -34,6 +34,7 @@
                 if($result > 0){
                     foreach($result as $row){
                         $_SESSION['user'] = $row['FirstName'];
+                        $_SESSION['id'] = $row['CustomerID'];
                         header("location: order.php");
                         exit;
                     }

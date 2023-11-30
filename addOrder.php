@@ -1,7 +1,7 @@
 <?php
     include "db.php";
     function getBranchFromName($branchName,$mysql){
-        $query = "SELECT BranchID FROM BRANCH WHERE BranchName = $branchName"
+        $query = "SELECT BranchID FROM BRANCH WHERE BranchName = $branchName";
     }
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rawData = file_get_contents('php://input');
