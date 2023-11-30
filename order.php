@@ -221,7 +221,7 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
-                const productQuantities = [];
+        const productQuantities = [];
         let currentCategory = '';
         const productPrices = new Map();
 
@@ -240,6 +240,25 @@
                 resetQuantities();
             });
 		});
+
+        function getProducts(category) {
+            currentCategory = category;
+            console.log(category);
+            fetch(`getProduct.php?product='${category}'`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    showProducts(data);
+                })
+                .catch(error => {
+                    console.error("Error during fetch operation:", error);
+                });
+        }
+
 
         function getSelectedProducts() {
             const selectedProducts = [];
@@ -300,7 +319,7 @@
                 productPrices.set(productId, parseFloat(product_details[1]));
                 var product_button = document.createElement("button");
                 product_button.classList.add("list-group-item");
-                product_button.innerHTML = '<div class="d-flex w-300 justify-content-between"><h5 class="mb-1">'+product_details[0]+'</h5><small id='+productId+'>£'+product_details[1]+'.00</small><img class="product-image" src="'+product_details[2]+'"></img></div><div class="number"><span class="minus" data-product-id="'+productId+'">-</span><input class="quantity" type="text" value="'+getProductQuantity(productId)+'" data-product-id="'+productId+'"/><span class="plus" data-product-id="'+productId+'">+</span></div>';
+                product_button.innerHTML = '<div class="d-flex w-300 justify-content-between"><h5 class="mb-1">'+product_details[0]+'</h5><small id='+productId+'>£'+product_details[1]+'</small><img class="product-image" src="'+product_details[2]+'"></img></div><div class="number"><span class="minus" data-product-id="'+productId+'">-</span><input class="quantity" type="text" value="'+getProductQuantity(productId)+'" data-product-id="'+productId+'"/><span class="plus" data-product-id="'+productId+'">+</span></div>';
                 product_area.appendChild(product_button);
             })
         }
@@ -327,16 +346,8 @@
                 }
             })
             .then((data)=>console.log("Success:",data))
-            .catch((error)=>console.error("Error:",error));
-            console.log(JSON.stringify(orderData));
+            .catch((error)=>console.error("Error:",error))
         }
-
-
-
-        //pass chechout details to database
-        //->insert statement to go into database
-        
-        //<- in progress orders from database
 
         function checkout() {
             const selectedProducts = productQuantities.filter(product => product.quantity > 0);
@@ -420,25 +431,6 @@
             document.getElementById('products').innerHTML = '';
             document.getElementById('basket').style.display = 'none';
             document.getElementById('checkoutButton').style.display = 'none';
-        }
-
-
-        function getProducts(category) {
-            currentCategory = category;
-            console.log(category);
-            fetch(`getProduct.php?product='${category}'`)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Network response was not ok");
-                    }
-                    return response.text();
-                })
-                .then(data => {
-                    showProducts(data);
-                })
-                .catch(error => {
-                    console.error("Error during fetch operation:", error);
-                });
         }
 
     </script>

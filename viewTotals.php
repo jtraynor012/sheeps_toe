@@ -311,14 +311,15 @@ if(isset($_GET["logout"])){
                 try {
                     console.log("Received data: ", data);
                     const daySales = {
-                        'Monday': { totalProfit: 0, count: 0 },
-                        'Tuesday': { totalProfit: 0, count: 0 },
-                        'Wednesday': { totalProfit: 0, count: 0 },
-                        'Thursday': { totalProfit: 0, count: 0 },
-                        'Friday': { totalProfit: 0, count: 0 },
-                        'Saturday': { totalProfit: 0, count: 0 },
-                        'Sunday': { totalProfit: 0, count: 0 },
+                        'Monday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Tuesday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Wednesday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Thursday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Friday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Saturday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Sunday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
                     };
+
 
                     data.forEach(entry => {
                         const dayOfWeek = new Date(entry.timeCompleted).toLocaleDateString('en-US', { weekday: 'long' });
@@ -328,18 +329,17 @@ if(isset($_GET["logout"])){
 
                         daySales[dayOfWeek].totalProfit += profit;
                         daySales[dayOfWeek].count += 1;
+                        daySales[dayOfWeek].uniqueWeeks.add(getWeekNumber(new Date(entry.timeCompleted)));
                     });
 
                     const averageSales = {};
                     for (const dayOfWeek in daySales) {
-                        const { totalProfit, count } = daySales[dayOfWeek];
-                        averageSales[dayOfWeek] = count === 0 ? 0 : totalProfit / count;
+                        const { totalProfit, count, uniqueWeeks} = daySales[dayOfWeek];
+                        averageSales[dayOfWeek] = uniqueWeeks.size === 0 ? 0 : totalProfit / uniqueWeeks.size;
                     }
 
                     console.log("Average sales data: ", averageSales);
 
-                    // Now, you can use the averageSales data to create a graph using Chart.js
-                    // I'll provide the Chart.js code for creating a bar chart
 
                     const profitbd = document.getElementById("profit-by-day").getContext("2d");
 
@@ -376,6 +376,12 @@ if(isset($_GET["logout"])){
                 } catch (error) {
                     console.error("Error parsing JSON:", error);
                 }
+            }
+
+            function getWeekNumber(date) {
+                const oneJan = new Date(date.getFullYear(), 0, 1);
+                const numberOfDays = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
+                return Math.ceil((date.getDay() + 1 + numberOfDays) / 7);
             }
 
             function grabProductByTime(){
