@@ -137,18 +137,7 @@
                     array_push($result,intval($mysql->lastInsertId()));
                 }
             }
-            return [
-                'params' => [
-                    'result' => json_encode($result),
-                    'productArray' => json_encode($productArray),
-                    '$productItem' => json_encode($productItem),
-                    'orderID' => $orderID,
-                    'productID' => $productID,
-                    'quantity' => $quantity,
-                    'price' => $price,
-                    'orderCost' => $orderCost
-                ]
-            ];
+            return "Order successfully placed!";
         } catch (PDOException $e) {
             return [
                 'error' => $e->getMessage(),

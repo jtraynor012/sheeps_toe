@@ -34,6 +34,9 @@
             $currentOrders .= $row['OrderID']."$".$row['TableNumber']."!";
         }
         $splitOrders = explode("!", $currentOrders);
+        $splitOrders = array_filter($splitOrders, function($value) {
+            return !empty($value);
+        });
         foreach($splitOrders as $order){
             $orderInfo = explode("$",$order);
             $orderID = $orderInfo[0];
@@ -46,6 +49,7 @@
                 $productName = getProductName($OrderItems['ProductID'],$mysql);
                 $response .= $OrderItems['OrderID']."$".$tableNumber."$".$productName."$".$OrderItems['Quantity']."!";
             }
+            $response .= ":";
         }
         echo $response;
     } catch (PDOException $e) {
