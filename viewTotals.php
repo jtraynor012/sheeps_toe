@@ -1,3 +1,19 @@
+<?php
+session_start();
+
+error_reporting(E_ALL & ~E_WARNING);
+ini_set('display_errors', 1);
+if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
+    header("location: login.php");
+}
+if(isset($_GET["logout"])){
+    unset($_SESSION['user']);
+    unset($_SESSION['branch']);
+    unset($_SESSION['role']);
+    header("location: login.php");
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -50,13 +66,6 @@
     </style>
 </head>
 <body>
-    <?php
-        session_start();
-        if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
-            header("location: login.php");
-        }
-    ?>
-
 
     <!-- Navigation Bar -->
     <nav class="navbar navbar-expand-lg navbar-light">
@@ -77,7 +86,7 @@
                     <a class="nav-link" href="contact.html">Contact</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="login.php">Log in </a>
+                    <a class="nav-link" href="?logout"><?php echo $_SESSION['user']?> - Logout</a>
                 </li>
             </ul>
         </div>
@@ -465,8 +474,8 @@
 
                 const profitbt = document.getElementById("profit-by-time");
 
-                if(window.profitbtChart){
-                    window.profitbtChart.destroy();
+                if(window.profitOverTimeChart){
+                    window.profitOverTimeChart.destroy();
                 }
 
                 window.profitOverTimeChart = new Chart(profitbt, {
