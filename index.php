@@ -47,16 +47,6 @@
           margin-top: 15px;
         }
 
-        .carousel-inner {
-            text-align: center;
-        }
-
-        .carousel-item {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 200px; /* Adjust the height as needed */
-        }
 
         .carousel-card {
             max-width: 500px; /* Adjust the maximum width as needed */
@@ -167,13 +157,18 @@
                 return response.json();
             })
             .then(data => {
+                console.log(data);
                 data.forEach((review, index) => {
-                    const activeClass = index === 0 ? "active" : "";
                     const carouselItem = document.createElement("div");
-                    carouselItem.classList.add("carousel-item", activeClass);
+                    carouselItem.classList.add("carousel-item");
+
+                    if (index === 0) {
+                        carouselItem.classList.add("active");
+                    }
 
                     const carouselCard = document.createElement("div");
                     carouselCard.classList.add("carousel-card");
+
                     carouselCard.innerHTML = `
                         <p>${review.FirstName} - Rating: ${generateStarRating(review.Rating)}</p>
                         <p>${review.Comment}</p>
@@ -184,6 +179,7 @@
                     carouselItem.appendChild(carouselCard);
                     carouselSection.appendChild(carouselItem);
                 });
+                $("#reviewsCarousel").carousel();
             })
             .catch(error => {
                 console.error("Error during fetch operation:", error);

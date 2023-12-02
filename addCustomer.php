@@ -7,6 +7,7 @@
     $emailAddress = $_POST['email'];
     $phoneNumber = $_POST['phone-number'];
     $pword = $_POST['pword'];
+    $pword = hash("sha256", $pword);
 
     try{
         $query = "CALL AddCustomer(:firstName, :lastName, :emailAddress, :phoneNumber, :password)";
@@ -21,6 +22,7 @@
 
         // Execute the stored procedure
         $stmt->execute();
+        header("location: login.php?msg=relogin");
 
 
     }catch(PDOException $e){

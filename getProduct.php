@@ -6,7 +6,7 @@
     $response = "";
 
     try {
-        $query = "SELECT * FROM ProductDetails WHERE ProductType = $category";
+        $query = "SELECT ProductName, Price, ProductImage FROM PRODUCTS WHERE ProductType = $category";
         $stmt = $mysql->prepare($query);
         $stmt->execute();
         $result = $stmt->fetchAll();
