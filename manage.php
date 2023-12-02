@@ -60,7 +60,7 @@ ob_flush();
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="order.php">Order</a>
@@ -85,18 +85,17 @@ ob_flush();
     </div>
 
     <div class="container text-center">
-
         <ul class="navbar-nav ml-auto">
             <li class="nav-item">
                 <a class="nav-link" href="man_employees.php">Manage Employees</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">View Orders</a>
+            <li class="nav item">
+                <a class="nav-link" href="mo1.php">View Orders</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Manage Products</a>
+            <li class="nav item">
+                <a class="nav-link" href="mo2.php">Manage Products</a>
             </li>
-            <li class="nav-item">
+            <li class="nav item">
                 <a class="nav-link" href="viewTotals.php">View Totals</a>
             </li>
         </ul>

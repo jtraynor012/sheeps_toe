@@ -53,6 +53,6 @@
         }
         echo $response;
     } catch (PDOException $e) {
-        echo $query . "<br>" . $e->getMessage();
+        echo json_encode($query . "<br>" . $e->getMessage());
     }
 ?>
