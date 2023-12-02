@@ -51,7 +51,7 @@
             }
             $response .= ":";
         }
-        echo $response;
+        echo json_encode($response);
     } catch (PDOException $e) {
         echo json_encode($query . "<br>" . $e->getMessage());
     }
