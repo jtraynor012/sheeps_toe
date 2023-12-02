@@ -77,7 +77,7 @@ if(isset($_GET["logout"])){
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="order.php">Order</a>
@@ -97,38 +97,42 @@ if(isset($_GET["logout"])){
         <h4>Totals</h4>
     </div>
 
+    <div class="container my-3">
+        <a class="nav-link" href="manage.php">Go back to Manager Access</a>
+    </div>
 
     <!-- Chart Container -->
-    <div class="container-fluid">
+    <div class="container-fluid text-center">
         <div class="row mt-5">
             <div class="col-md-6" id="product-by-day-section">
                 <h4 class="text-center">Product by day of the week (average)</h4>
                 <!--Product by day of the week avg price-->
                 <canvas id="product-by-day"></canvas>
-                Product:
+                <label for="product-select">Product:</label>
                 <select id="product-select"></select>
             </div>
             <div class="col-md-6" id="product-total-period-section">
-                <h4 class="text-center">Products over Time
+                <h4 class="text-center">Products over Time</h4>
                 <!--products over time period - Sum total of profit vs units sold-->
                 <canvas id="product-total-period"></canvas>
-                Date From:
+                <label for="product-period-from">Date From:</label>
                 <input type="date" name="date-from" id="product-period-from">
-                Date To:
+                <label for="product-period-to">Date To:</label>
                 <input type="date" name="date-to" id="product-period-to">
-                Category:
+                <label for="category-select">Category:</label>
                 <select id="category-select"></select>
                 <button class="btn btn-primary" id="product-time-submit">Run</button>
             </div>
         </div>
+        <br>
         <div class="row mt-10">
             <div class="col-md-6" id="profit-by-day-section">
                 <h4 class="text-center">Profit by day of the week (average)</h4>
                 <!--profit by day of the week, avg over dates-->
                 <canvas id="profit-by-day"></canvas>
-                Date From:
+                <label for="profit-avg-from">Date From:</label>
                 <input type="date" name="date-from-profit-by-day" id="profit-avg-from">
-                Date To:
+                <label for="profit-avg-to">Date To:</label>
                 <input type="date" name="date-to-profit-by-day" id="profit-avg-to">
                 <button class="btn btn-primary" id="profit-avg-submit">Run</button>
             </div>
@@ -136,7 +140,7 @@ if(isset($_GET["logout"])){
                 <h4 class="text-center"> Profit over Time of Day</h4>
                 <!--profit by time of day-->
                 <canvas id="profit-by-time"></canvas>
-                Date:
+                <label for="profit-date">Date:</label>
                 <input type="date" name="profit-time-day" id="profit-date">
                 <button class="btn btn-primary" id="profit-time-submit">Run</button>
             </div>
@@ -311,14 +315,15 @@ if(isset($_GET["logout"])){
                 try {
                     console.log("Received data: ", data);
                     const daySales = {
-                        'Monday': { totalProfit: 0, count: 0 },
-                        'Tuesday': { totalProfit: 0, count: 0 },
-                        'Wednesday': { totalProfit: 0, count: 0 },
-                        'Thursday': { totalProfit: 0, count: 0 },
-                        'Friday': { totalProfit: 0, count: 0 },
-                        'Saturday': { totalProfit: 0, count: 0 },
-                        'Sunday': { totalProfit: 0, count: 0 },
+                        'Monday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Tuesday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Wednesday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Thursday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Friday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Saturday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
+                        'Sunday': { totalProfit: 0, count: 0, uniqueWeeks: new Set() },
                     };
+
 
                     data.forEach(entry => {
                         const dayOfWeek = new Date(entry.timeCompleted).toLocaleDateString('en-US', { weekday: 'long' });
@@ -328,18 +333,17 @@ if(isset($_GET["logout"])){
 
                         daySales[dayOfWeek].totalProfit += profit;
                         daySales[dayOfWeek].count += 1;
+                        daySales[dayOfWeek].uniqueWeeks.add(getWeekNumber(new Date(entry.timeCompleted)));
                     });
 
                     const averageSales = {};
                     for (const dayOfWeek in daySales) {
-                        const { totalProfit, count } = daySales[dayOfWeek];
-                        averageSales[dayOfWeek] = count === 0 ? 0 : totalProfit / count;
+                        const { totalProfit, count, uniqueWeeks} = daySales[dayOfWeek];
+                        averageSales[dayOfWeek] = uniqueWeeks.size === 0 ? 0 : totalProfit / uniqueWeeks.size;
                     }
 
                     console.log("Average sales data: ", averageSales);
 
-                    // Now, you can use the averageSales data to create a graph using Chart.js
-                    // I'll provide the Chart.js code for creating a bar chart
 
                     const profitbd = document.getElementById("profit-by-day").getContext("2d");
 
@@ -376,6 +380,12 @@ if(isset($_GET["logout"])){
                 } catch (error) {
                     console.error("Error parsing JSON:", error);
                 }
+            }
+
+            function getWeekNumber(date) {
+                const oneJan = new Date(date.getFullYear(), 0, 1);
+                const numberOfDays = Math.floor((date - oneJan) / (24 * 60 * 60 * 1000));
+                return Math.ceil((date.getDay() + 1 + numberOfDays) / 7);
             }
 
             function grabProductByTime(){

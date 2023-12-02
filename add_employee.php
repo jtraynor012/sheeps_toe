@@ -1,8 +1,7 @@
 <?php
-    ob_start();
     include "db.php";
     session_start();
-
+    
     $firstName = $_POST['first_name'];
     $lastName = $_POST['last_name'];
 
@@ -17,54 +16,41 @@
     $role = $_POST['role'];
     $salary = $_POST['salary'];
     $branchID = $_SESSION['branch'];
+    $pword = $_POST['pword'];
+    $pword = hash("sha256", $pword);
 
     $salary = intval($salary);
     $branchID = intval($branchID);
+    
 
     try{
-        
-        $query = "SELECT PhoneNumber, EmailAddress FROM STAFF WHERE BranchID = $branchID";
+        $query = "CALL AddStaff(:branchID, :firstName, :lastName, :dob, :dateEmployed, :phoneNumber, :emailAddress, :role, :salary, :password)";
         $stmt = $mysql->prepare($query);
-        $stmt->execute();
-        $result = $stmt->fetchAll();
-        $error_code = "";
-
-        foreach($result as $row){
-            if($row['EmailAddress'] == $email){
-                echo "Email is already is use!";
-                $error_code += "email_repeat";
-            }
-            if($row['PhoneNumber']==$phonenumber){
-                echo "Phone number is already in use!";
-                if($error_code != ""){
-                    $error_code+="&";
-                }
-                $error_code+="phone_repeat";
-            }
-            
-        }
-        if($error_code != ""){
-            header("location: man_employees.php?"+$error_code);
+        if (!$stmt) {
+            echo "\nPDO::errorInfo():\n";
+            print_r($mysql->errorInfo());
         }
 
-
-
-        $query = "INSERT INTO STAFF (`BranchID`, `FirstName`, `LastName`, `DOB`, `DateEmployed`, `PhoneNumber`, `EmailAddress`, `Role`, `Salary`) 
-        VALUES (:branchID, :firstName, :lastName, :dob, :startDate, :phoneNumber, :email, :role, :salary)";
         
-        $stmt = $mysql->prepare($query);
+        // Bind parameters
         $stmt->bindParam(':branchID', $branchID, PDO::PARAM_INT);
         $stmt->bindParam(':firstName', $firstName, PDO::PARAM_STR);
         $stmt->bindParam(':lastName', $lastName, PDO::PARAM_STR);
         $stmt->bindParam(':dob', $dob, PDO::PARAM_STR);
-        $stmt->bindParam(':startDate', $startDate, PDO::PARAM_STR);
+        $stmt->bindParam(':dateEmployed', $startDate, PDO::PARAM_STR);
         $stmt->bindParam(':phoneNumber', $phoneNumber, PDO::PARAM_STR);
-        $stmt->bindParam(':email', $email, PDO::PARAM_STR);
+        $stmt->bindParam(':emailAddress', $email, PDO::PARAM_STR);
         $stmt->bindParam(':role', $role, PDO::PARAM_STR);
         $stmt->bindParam(':salary', $salary, PDO::PARAM_INT);
+        $stmt->bindParam(':password', $pword, PDO::PARAM_STR);
 
+        // Execute the stored procedure
         $stmt->execute();
-        echo "Employee $firstName added successfully";
+        if ($stmt->errorCode() != 0) {
+            echo "\nPDO::errorInfo():\n";
+            print_r($stmt->errorInfo());
+        }
+
         header("location: man_employees.php");
     } catch(PDOException $e){
         echo $sql . "<br>" . $e->getMessage();

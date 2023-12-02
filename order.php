@@ -116,7 +116,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="#">Order</a>
@@ -300,7 +300,7 @@
                 productPrices.set(productId, parseFloat(product_details[1]));
                 var product_button = document.createElement("button");
                 product_button.classList.add("list-group-item");
-                product_button.innerHTML = '<div class="d-flex w-300 justify-content-between"><h5 class="mb-1">'+product_details[0]+'</h5><small id='+productId+'>£'+product_details[1]+'.00</small><img class="product-image" src="'+product_details[2]+'"></img></div><div class="number"><span class="minus" data-product-id="'+productId+'">-</span><input class="quantity" type="text" value="'+getProductQuantity(productId)+'" data-product-id="'+productId+'"/><span class="plus" data-product-id="'+productId+'">+</span></div>';
+                product_button.innerHTML = '<div class="d-flex w-300 justify-content-between"><h5 class="mb-1">'+product_details[0]+'</h5><small id='+productId+'>£'+product_details[1]+'</small><img class="product-image" src="'+product_details[2]+'"></img></div><div class="number"><span class="minus" data-product-id="'+productId+'">-</span><input class="quantity" type="text" value="'+getProductQuantity(productId)+'" data-product-id="'+productId+'"/><span class="plus" data-product-id="'+productId+'">+</span></div>';
                 product_area.appendChild(product_button);
             })
         }

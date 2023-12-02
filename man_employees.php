@@ -65,7 +65,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="order.php">Order</a>
@@ -92,7 +92,6 @@
         <h4>Welcome <?php echo $_SESSION['user']?> - Manager Access</h4>
     </div>
 
-    <!-- Pagination -->
     <div class="container my-3">
         <a class="nav-link" href="manage.php">Go back to Manager Access</a>
     </div>
@@ -144,6 +143,8 @@
                         <input type="number" name="salary" min="12000" max="40000" required>
                         <br>
                         <br>
+                        Password:
+                        <input type="password" name="pword" id="pword" require>
                         <input type="submit" id="add_submit" value="submit">
                     </form>
                 </div>
@@ -320,9 +321,15 @@
                     .catch(error => {
                         console.error("Error during fetch operation:", error);
                     });
+                    //refresh after 1 second to allow database time to find and delete record
+                    setTimeout(function(){
+                        location.reload(true);
+                    }, 1000);
+                    
                 } else {
                     console.log("Removal Cancelled");
                 }
+
             } else {
                 console.log("No employee selected.");
             }

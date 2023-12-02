@@ -6,37 +6,46 @@
             $uname=$_POST['uname'];
             $pword=$_POST['pword'];
             $pword = hash("sha256", $pword);
+
+            //If username is email, check customer table, else check staff table
+            if(filter_var($uname, FILTER_VALIDATE_EMAIL)){
            
-            $query = "SELECT * FROM CUSTOMER_CREDENTIALS";
-            $stmt = $mysql->prepare($query);
-            $stmt->execute();
-            $result = $stmt->fetchAll();
+                $query = "SELECT c.EmailAddress, c.FirstName, cc.Password
+                FROM CUSTOMERS c
+                JOIN CUSTOMER_CREDENTIALS cc ON c.CustomerID = cc.CustomerID
+                WHERE c.EmailAddress = :email";
 
-            $Cust_ID = -1;
-            $staff_ID = -1;
-
-            $cust_auth = False;
-            $staff_auth = False;
-            
-            foreach($result as $row){
-                if($uname == $row['CustomerID'] && $pword == $row['Password']){
-                    $Cust_ID = $row['CustomerID'];
-                    $cust_auth = True;
-                }
-            }
-
-            if($cust_auth){
-                $query = "SELECT FirstName, CustomerID FROM CUSTOMERS WHERE CustomerID = $Cust_ID";
                 $stmt = $mysql->prepare($query);
+                $stmt->bindParam(":email", $uname, PDO::PARAM_STR);
                 $stmt->execute();
                 $result = $stmt->fetchAll();
 
-                if($result > 0){
-                    foreach($result as $row){
-                        $_SESSION['user'] = $row['FirstName'];
-                        $_SESSION['id'] = $row['CustomerID'];
-                        header("location: order.php");
-                        exit;
+                $Cust_ID = -1;
+
+                $cust_auth = False;
+                $staff_auth = False;
+                
+                foreach($result as $row){
+                    if($uname == $row['EmailAddress'] && $pword == $row['Password']){
+                        $Cust_ID = $row['CustomerID'];
+                        $cust_auth = True;
+                        break;
+                    }
+                }
+
+                if($cust_auth){
+                    $query = "SELECT FirstName, CustomerID FROM CUSTOMERS WHERE CustomerID = $Cust_ID";
+                    $stmt = $mysql->prepare($query);
+                    $stmt->execute();
+                    $result = $stmt->fetchAll();
+
+                    if($result > 0){
+                        foreach($result as $row){
+                            $_SESSION['user'] = $row['FirstName'];
+                            $_SESSION['id'] = $row['CustomerID'];
+                            header("location: order.php");
+                            exit;
+                        }
                     }
                 }
             }
@@ -45,6 +54,8 @@
                 $stmt = $mysql->prepare($query);
                 $stmt->execute();
                 $result = $stmt->fetchAll();
+
+                $staff_ID = -1;
 
                 foreach($result as $row){
                     //echo $row['StaffID']." ".$row['Password']."<br>";

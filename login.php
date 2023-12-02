@@ -43,7 +43,7 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="order.php">Order</a>
@@ -73,7 +73,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="form-content">
-                    <form action="verify.php" method="POST">
+                    <form action="verify2.php" method="POST">
                         Username:
                         <input type="text" name="uname">
                         <br>
@@ -89,6 +89,12 @@
                     </form>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row mt-5 text-center">
+            <a href="registerCustomer.php">Register</a>
         </div>
     </div>
 
