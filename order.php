@@ -101,7 +101,7 @@
         ob_start();
         session_start();
         if(!isset($_SESSION["user"])){
-            header("location: login.php");
+            header("location: login.php?msg=loginfirst");
         }
     ?>
 
@@ -124,7 +124,14 @@
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php echo $_SESSION["user"] ?>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="logoutDropdown">
+                        <a class="dropdown-item" href="?logout">Logout</a>
+                        <a class="dropdown-item text-danger" href="deleteAccount.php">Delete Account</a>
+                    </div>
                     <a class="nav-link" href="?logout"><?php echo $_SESSION["user"]." - Logout" ?></a>
                 </li>
             </ul>
@@ -329,6 +336,7 @@
             .then((data)=>console.log("Success:",data))
             .catch((error)=>console.error("Error:",error));
             console.log(JSON.stringify(orderData));
+            window.alert("Order has been placed!")
         }
 
 
@@ -359,7 +367,6 @@
             };
             console.log("orderData: " + orderData);
             sendOrder(orderData);
-            // For example, clear the basket after checkout
             productQuantities.length = 0;
             updateBasketDisplay();
         }
