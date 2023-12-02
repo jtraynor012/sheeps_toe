@@ -113,7 +113,7 @@
     <div class="container text-center">
         <div class="row">
             <div class="col-md-12">
-                <form class="form-content" action="addEmployee.php" method="POST">
+                <form class="form-content" action="addCustomer.php" method="POST">
                     <label for="first-name">*First Name:</label>
                     <input type="text" id="first-name" name="first-name" require>
                     <br>
