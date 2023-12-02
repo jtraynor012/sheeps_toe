@@ -9,7 +9,7 @@
                 INNER JOIN CUSTOMERS c ON r.CustomerID = c.CustomerID";
         $stmt=$mysql->prepare($query);
         $stmt->execute();
-        $result = $stmt->fetchAll();
+        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         $response = json_encode($result);
         echo $response;

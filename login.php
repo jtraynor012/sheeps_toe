@@ -82,9 +82,17 @@
                         <input type="password" name="pword">
                         <br>
                         <br>
-                        <?php if(isset($_GET["msg"]) && $_GET["msg"] == "unauth"){
-                            echo "Incorrect username or password...";
-                        }?>
+                        <?php 
+                            if(isset($_GET["msg"]) && $_GET['msg'] == "unauth"){
+                                echo "Incorrect username or password...";
+                            }
+                            if(isset($_GET['msg']) && $_GET['msg'] == "relogin"){
+                                echo "Great! Now login with your details to order!";
+                            }
+                            if(isset($_GET['msg']) && $_GET['msg'] == "loginfirst"){
+                                echo "You must login/register first to place an order!";
+                            }
+                        ?>
                         <input type="submit" value="submit">
                     </form>
                 </div>

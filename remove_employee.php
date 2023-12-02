@@ -8,7 +8,7 @@
     $employeeID = intval($employee_details[0]);
 
     try{
-    $query = "DELETE FROM STAFF WHERE StaffID = $employeeID";
+    //$query = "DELETE FROM STAFF WHERE StaffID = $employeeID";
     $query = "CALL deleteStaff(:staffID)";
     $stmt = $mysql->prepare($query);
     $stmt->bindParam(":staffID", $employeeID, PDO::PARAM_INT);
