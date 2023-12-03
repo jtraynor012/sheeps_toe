@@ -55,7 +55,7 @@ function verify($email, $password) {
                     if(!$_SESSION['branch']){
                         echo "BranchID not fetched...";
                     }
-                    header("location: order.php"); //CHANGE THIS TO STAFF LANDING PAGE
+                    header("location: mo1.php"); //CHANGE THIS TO STAFF LANDING PAGE
                 }
             }
             //exit;
