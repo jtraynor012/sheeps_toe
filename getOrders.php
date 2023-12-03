@@ -2,19 +2,19 @@
     session_start();
     include "db.php";
 
-    $branch = $_GET['Branch']; // Make sure to use this if it's needed
-    $response = "";
-    $currentOrders = "";
+    $branch = $_SESSION['branch']; // Make sure to use this if it's needed
+    $response = array(); // Initialize an empty array for the JSON response
 
-    function getOrders($branch,$mysql){
+    function getOrders($branch, $mysql){
         $getOrders = "SELECT OrderID, TableNumber FROM ORDERS WHERE BranchID = $branch AND `Status` = 'In progress'";
         $stmt = $mysql->prepare($getOrders);
         $stmt->execute();
-        $getOrders = $stmt->fetchAll();
+        $getOrders = $stmt->fetchAll(PDO::FETCH_ASSOC); // Fetch as associative array
         return $getOrders;
     }
-    function getProductName($productID,$mysql){
-        try{
+
+    function getProductName($productID, $mysql){
+        try {
             $getProductName = "SELECT ProductName FROM PRODUCTS WHERE ProductID = $productID";
             $stmt = $mysql->prepare($getProductName);
             $stmt->execute();
@@ -25,35 +25,40 @@
             }
             return $productName;
         } catch(PDOException $e){
-            echo "getProductName Failure:" . "<br>" . $e->getMessage();
+            echo json_encode("getProductName Failure:" . "<br>" . $e->getMessage());
         }
     }
+
     try {
-        $orders = getOrders($branch,$mysql);
+        $orders = getOrders($branch, $mysql);
         foreach($orders as $row) {
-            $currentOrders .= $row['OrderID']."$".$row['TableNumber']."!";
-        }
-        $splitOrders = explode("!", $currentOrders);
-        $splitOrders = array_filter($splitOrders, function($value) {
-            return !empty($value);
-        });
-        foreach($splitOrders as $order){
-            $orderInfo = explode("$",$order);
-            $orderID = $orderInfo[0];
-            $tableNumber = $orderInfo[1];
-            $getOrderItems = "SELECT OrderID, ProductID, Quantity FROM ORDER_PRODUCTS WHERE OrderID = '$orderID'";
+            $orderID = $row['OrderID'];
+            $tableNumber = $row['TableNumber'];
+            $orderItems = array();
+
+            // Fetch order items for the current order
+            $getOrderItems = "SELECT ProductID, Quantity FROM ORDER_PRODUCTS WHERE OrderID = '$orderID'";
             $stmt = $mysql->prepare($getOrderItems);
             $stmt->execute();
-            $getOrderItems = $stmt->fetchAll();
+            $getOrderItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
             foreach($getOrderItems as $OrderItems){
-                $productName = getProductName($OrderItems['ProductID'],$mysql);
-                $response .= $OrderItems['OrderID']."$".$tableNumber."$".$productName."$".$OrderItems['Quantity']."!";
+                $productName = getProductName($OrderItems['ProductID'], $mysql);
+                $orderItems[] = array(
+                    "ProductName" => $productName,
+                    "Quantity" => $OrderItems['Quantity']
+                );
             }
-            $response .= ":";
+
+            $response[] = array(
+                "OrderID" => $orderID,
+                "TableNumber" => $tableNumber,
+                "OrderItems" => $orderItems
+            );
         }
-        echo $response;
-        echo json_encode(["status" => "success", "message" => $response]);
+
+        echo json_encode($response);
     } catch (PDOException $e) {
-        echo json_encode($query . "<br>" . $e->getMessage());
+        echo json_encode("Error: " . $e->getMessage());
     }
 ?>

@@ -35,6 +35,7 @@
             border-radius: 10px;
             margin: 20px 0;
             padding: 20px;
+            background-color: #FFFFFF; 
         }
 
         .order-actions {
@@ -43,6 +44,23 @@
 
         .order-details {
             margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            /* Adjust styles for larger screens */
+            .order-container {
+                width: 48%; /* Display two containers side by side */
+                display: inline-block;
+                margin-right: 1%;
+            }
+        }
+
+        @media (min-width: 992px) {
+            /* Adjust styles for screens larger than 992 pixels wide (lg) */
+            .order-container {
+                width: 31%; /* Display three containers side by side */
+                margin-right: 2%; /* Adjust margin between containers */
+            }
         }
     </style>
 </head>
@@ -93,68 +111,123 @@
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-    <script>
-        // Fetch orders and update the DOM
-        function fetchOrders() {
-            fetch('getOrders.php') // Assuming you have a PHP file to fetch orders
-                .then(response => response.json())
-                .then(data => {
-                    // Update the DOM with the fetched data
-                    updateDOM(data);
-                })
-                .catch(error => console.error('Error:', error));
-        }
 
-        // Update the DOM with orders data
-        function updateDOM(orders) {
-            const ordersContainer = document.getElementById('ordersContainer');
-            ordersContainer.innerHTML = ''; // Clear previous content
+<script>
+    // Fetch orders and update the DOM
+    function fetchOrders() {
+        fetch('getOrders.php') // Assuming you have a PHP file to fetch orders
+            .then(response => response.json())
+            .then(data => {
+                // Update the DOM with the fetched data
+                updateDOM(data);
+            })
+            .catch(error => console.error('Error:', error));
+    }
 
-            orders.forEach(order => {
-                const orderContainer = document.createElement('div');
-                orderContainer.className = 'order-container';
+    // Update the DOM with orders data
+    function updateDOM(orders) {
+        const ordersContainer = document.getElementById('ordersContainer');
+        ordersContainer.innerHTML = ''; // Clear previous content
 
-                orderContainer.innerHTML = `
-                    <h5>Order ID: ${order.OrderID}</h5>
-                    <p>Table Number: ${order.TableNumber}</p>
-                    <div class="order-details" id="orderDetails-${order.OrderID}"></div>
-                    <div class="order-actions">
-                        <button class="btn btn-danger" onclick="voidOrder(${order.OrderID})">Void</button>
-                        <button class="btn btn-success" onclick="completeOrder(${order.OrderID})">Complete</button>
-                    </div>
-                `;
+        orders.forEach(order => {
+            const orderContainer = document.createElement('div');
+            orderContainer.className = 'order-container';
 
-                ordersContainer.appendChild(orderContainer);
+            orderContainer.innerHTML = `
+                <h5>Order ID: ${order.OrderID}</h5>
+                <p>Table Number: ${order.TableNumber}</p>
+                <div class="order-details" id="orderDetails-${order.OrderID}"></div>
+                <div class="order-actions">
+                    <button class="btn btn-danger" onclick="voidOrder(${order.OrderID})">Void</button>
+                    <button class="btn btn-success" onclick="completeOrder(${order.OrderID})">Complete</button>
+                </div>
+            `;
 
-                // Fetch and update order details
-                fetch(`getOrders.php?orderID=${order.OrderID}`)
-                    .then(response => response.json())
-                    .then(orderItems => {
-                        const orderDetailsContainer = document.getElementById(`orderDetails-${order.OrderID}`);
-                        orderItems.forEach(item => {
-                            const itemDetails = document.createElement('p');
-                            itemDetails.textContent = `Product: ${item.ProductName}, Quantity: ${item.Quantity}`;
-                            orderDetailsContainer.appendChild(itemDetails);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching order items:', error));
+            ordersContainer.appendChild(orderContainer);
+
+            // Fetch and update order details
+            const orderDetailsContainer = document.getElementById(`orderDetails-${order.OrderID}`);
+            order.OrderItems.forEach(item => {
+                const itemDetails = document.createElement('p');
+                itemDetails.textContent = `Product: ${item.ProductName}, Quantity: ${item.Quantity}`;
+                orderDetailsContainer.appendChild(itemDetails);
             });
-        }
+        });
+    }
 
-        // JavaScript functions to handle order actions (complete, void)
-        function completeOrder(orderId) {
-            // Implement logic to mark the order as completed in the database
-            alert('Order marked as completed. Refresh the page to see changes.');
+    // JavaScript functions to handle order actions (complete, void)
+    function completeOrder(orderId) {
+        
+        fetch('completeOrder.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orderId: orderId,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if the order was completed successfully
+            if (data.success) {
+                // Remove the order from the DOM
+                const orderContainers = document.getElementsByClassName('order-container');
+                for (const orderContainer of orderContainers) {
+        const orderOrderId = orderContainer.querySelector('h5').textContent.split(': ')[1]; // Assuming h5 contains "Order ID: xxx"
+        
+        if (orderOrderId === orderId.toString()) {
+            orderContainer.remove();
+            break; // Once the order is found and removed, exit the loop
         }
+    }
 
-        function voidOrder(orderId) {
-            // Implement logic to void the order in the database
-            alert('Order voided. Refresh the page to see changes.');
-        }
+                alert('Order marked as completed. Refresh the page to see changes.');
+            } else {
+                alert('Failed to mark the order as completed. Please try again.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
 
-        // Fetch orders on page load
-        fetchOrders();
-    </script>
+    function voidOrder(orderId) {
+        
+        fetch('voidOrder.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orderId: orderId,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if the order was voided successfully
+            if (data.success) {
+                // Remove the order from the DOM
+                const orderContainers = document.getElementsByClassName('order-container');
+                for (const orderContainer of orderContainers) {
+                const orderOrderId = orderContainer.querySelector('h5').textContent.split(': ')[1]; // Assuming h5 contains "Order ID: xxx"
+        
+                if (orderOrderId === orderId.toString()) {
+                    orderContainer.remove();
+                break; // Once the order is found and removed, exit the loop
+                }   
+            }   
+
+                alert('Order voided. Refresh the page to see changes.');
+            } else {
+                alert('Failed to void the order. Please try again.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    // Fetch orders on page load
+    fetchOrders();
+</script>
+
 </body>
 
 </html>
