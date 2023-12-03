@@ -91,10 +91,10 @@ ob_flush();
                 <a class="nav-link" href="man_employees.php">Manage Employees</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">View Orders</a>
+                <a class="nav-link" href="mo1.php">View Orders</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Manage Products</a>
+                <a class="nav-link" href="mo2.php">Manage Products</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="viewTotals.php">View Totals</a>
