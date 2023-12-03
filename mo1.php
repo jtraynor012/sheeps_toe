@@ -35,7 +35,6 @@
             border-radius: 10px;
             margin: 20px 0;
             padding: 20px;
-            background-color: #FFFFFF; 
         }
 
         .order-actions {
@@ -44,23 +43,6 @@
 
         .order-details {
             margin-top: 20px;
-        }
-
-        @media (min-width: 768px) {
-            /* Adjust styles for larger screens */
-            .order-container {
-                width: 48%; /* Display two containers side by side */
-                display: inline-block;
-                margin-right: 1%;
-            }
-        }
-
-        @media (min-width: 992px) {
-            /* Adjust styles for screens larger than 992 pixels wide (lg) */
-            .order-container {
-                width: 31%; /* Display three containers side by side */
-                margin-right: 2%; /* Adjust margin between containers */
-            }
         }
     </style>
 </head>
@@ -77,10 +59,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="order.php">Order</a>
+                    <a class="nav-link" href="order.html">Order</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
@@ -94,6 +76,12 @@
     <!-- Sub Header -->
     <div class="sub-header">
         <h4><?php echo $_SESSION['user'] ?> - Todays Orders</h4>
+    </div>
+
+    <div class="btn-group" role="group" aria-label="Filter Orders">
+        <button type="button" class="btn btn-secondary" onclick="fetchOrders('In progress')">In Progress</button>
+        <button type="button" class="btn btn-secondary" onclick="fetchOrders('Voided')">Voided</button>
+        <button type="button" class="btn btn-secondary" onclick="fetchOrders('Completed')">Completed</button>
     </div>
 
     <!-- Order Display Section -->
@@ -114,8 +102,8 @@
 
 <script>
     // Fetch orders and update the DOM
-    function fetchOrders() {
-        fetch('getOrders.php') // Assuming you have a PHP file to fetch orders
+    function fetchOrders(status) {
+        fetch(`getOrders.php?status=${status}`) // Assuming you have a PHP file to fetch orders
             .then(response => response.json())
             .then(data => {
                 // Update the DOM with the fetched data
@@ -191,6 +179,7 @@
     }
 
     function voidOrder(orderId) {
+        
         fetch('voidOrder.php', {
             method: 'POST',
             headers: {
@@ -215,16 +204,13 @@
                 }   
             }   
 
-                setTimeout(function(){
-                        location.reload(true);
-                }, 1000);
+                alert('Order voided. Refresh the page to see changes.');
             } else {
-                window.alert('Failed to void the order. Please try again.');
+                alert('Failed to void the order. Please try again.');
             }
         })
         .catch(error => console.error('Error:', error));
     }
-
 
     // Fetch orders on page load
     fetchOrders();

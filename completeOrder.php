@@ -3,7 +3,11 @@ session_start();
 include "db.php";
 
 // Assuming you receive the orderId as a POST parameter
-$orderId = $_POST['orderId'];
+$json_data = file_get_contents("php://input");
+$data = json_decode($json_data, true);
+$orderId = $data['orderId'];
+$orderId = intval($orderId);
+
 
 // Retrieve the branch from the session
 $branch = $_SESSION['branch'];
