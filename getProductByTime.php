@@ -12,6 +12,7 @@
     $branchID = $_SESSION['branch'];
 
     try{
+        /*
         $query = "SELECT p.ProductName, p.ProductType, SUM(op.Quantity) AS UnitsSold, 
                 SUM((op.RetailPriceAtOrder - op.ProductOrderCostAtOrder)*op.Quantity) AS Profit
                 FROM ORDER_PRODUCTS op
@@ -21,6 +22,12 @@
                 AND p.ProductType = :category
                 AND o.BranchID = :branchID
                 GROUP BY p.ProductName, p.ProductType";
+        */
+        $query = "SELECT ProductName, ProductType, totalSold, Profit
+                FROM OrderStatisticsView
+                WHERE TimeCompleted BETWEEN :dateFrom AND :dateTo
+                AND productType = :category
+                AND BranchID = :branchID";
 
         $stmt = $mysql->prepare($query);
         $stmt->bindParam(":dateFrom", $dateFrom, PDO::PARAM_STR);
