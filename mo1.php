@@ -191,7 +191,6 @@
     }
 
     function voidOrder(orderId) {
-        
         fetch('voidOrder.php', {
             method: 'POST',
             headers: {
@@ -216,13 +215,16 @@
                 }   
             }   
 
-                alert('Order voided. Refresh the page to see changes.');
+                setTimeout(function(){
+                        location.reload(true);
+                }, 1000);
             } else {
                 alert('Failed to void the order. Please try again.');
             }
         })
         .catch(error => console.error('Error:', error));
     }
+
 
     // Fetch orders on page load
     fetchOrders();
