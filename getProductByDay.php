@@ -19,11 +19,10 @@
 
     try{
 
-        $query = "SELECT TimeCompleted, Quantity, MIN(TimeCompleted) AS minDate, MAX(TimeCompleted) as maxDate 
-                FROM ORDERS, ORDER_PRODUCTS 
-                WHERE ORDERS.BranchID = :branchID AND
-                    ORDER_PRODUCTS.ProductID = :productID AND
-                    ORDER_PRODUCTS.OrderID = ORDERS.OrderID";
+        $query = "SELECT TimeCompleted, Quantity, MostDistantDate, MostRecentDate, NumberOfWeeks
+                FROM OrderStatisticsView
+                WHERE BranchID = :branchID AND
+                    ProductID = :productID AND";
 
 
         $stmt = $mysql->prepare($query);
@@ -37,8 +36,9 @@
         foreach($result as $row){
             $timeCompleted = $row['TimeCompleted'];
             $quantity = $row['Quantity'];
-            $minDate = $row['minDate'];
-            $maxDate = $row['maxDate'];
+            $minDate = $row['mostDistantDate'];
+            $maxDate = $row['MostRecentDate'];
+            $weeks = $row['NumberOfWeeks'] == 0 ? 1 : $row['NumberOfWeeks'];
 
 
             $dayOfWeek = date("l", strtotime($timeCompleted));
@@ -46,16 +46,6 @@
         }
 
         $averageSales = array();
-
-        if($minDate && $maxDate){
-            $weeks = (int)date("W", strtotime($maxDate)) - (int)date("W", strtotime($minDate));
-            if($weeks==0){
-                $weeks=1;
-            }
-        }
-        else{
-            $weeks = 1;
-        }
 
         foreach($daySales as $day =>$totalSales){
             $averageSales[$day] = $totalSales / $weeks;

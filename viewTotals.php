@@ -416,7 +416,7 @@ if(isset($_GET["logout"])){
                 // Iterate over each item in the array
                 data.forEach(function (item) {
                     labels.push(item.ProductName);
-                    unitsSoldData.push(parseInt(item.UnitsSold));
+                    unitsSoldData.push(parseInt(item.totalSold));
                     profitData.push(parseFloat(item.Profit));
                 });
 
