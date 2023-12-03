@@ -90,10 +90,11 @@
                                     $_SESSION["user"]
                                 .'</a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="logoutDropdown">
-                                    <a class="dropdown-item" href="?logout">'.$_SESSION["user"].' - Logout" ?></a>
+                                    <a class="dropdown-item" href="index.php">'.$_SESSION["user"].' - Logout" ?></a>
                                     <a class="dropdown-item text-danger" href="deleteAccount.php">Delete Account</a>
                                 </div>
                             </li>';
+                            session_unset();
                     }
                     else{
                         echo '<li class="nav-item">
