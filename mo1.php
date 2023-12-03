@@ -219,7 +219,7 @@
                         location.reload(true);
                 }, 1000);
             } else {
-                alert('Failed to void the order. Please try again.');
+                window.alert('Failed to void the order. Please try again.');
             }
         })
         .catch(error => console.error('Error:', error));
