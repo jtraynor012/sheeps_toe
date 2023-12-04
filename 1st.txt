@@ -1,0 +1,25 @@
+<?php
+// ... (previous code)
+
+function insertOrderIntoDatabase($customerId, $tableNumber, $orderDetails, $quantities, $price, $status) {
+    // Assuming you have a database connection already established
+    // You need to sanitize and validate user input before using it in a query
+    // This is a simple example and may need adjustments based on your database schema
+
+    $query = "INSERT INTO Orders (CustomerID, TableNumber, OrderDetails, Quantities, Price, Status)
+              VALUES ($customerId, $tableNumber, '$orderDetails', '$quantities', $price, '$status')";
+
+    // Execute the query (you might want to use prepared statements for security)
+    // $result = mysqli_query($yourDbConnection, $query);
+
+    // If the query was successful, you can redirect the user
+    // if ($result) {
+    //     header("Location: manage_orders.php");
+    //     exit();
+    // }
+}
+
+// After processing the checkout, call the function to insert the order into the database
+// Adjust the parameters based on your actual data
+insertOrderIntoDatabase($customerId, $tableNumber, $orderDetails, $quantities, $price, $status);
+?>
