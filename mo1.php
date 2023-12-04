@@ -35,6 +35,7 @@
             border-radius: 10px;
             margin: 20px 0;
             padding: 20px;
+            background-color: #FFFFFF; 
         }
 
         .order-actions {
@@ -43,6 +44,23 @@
 
         .order-details {
             margin-top: 20px;
+        }
+
+        @media (min-width: 768px) {
+            /* Adjust styles for larger screens */
+            .order-container {
+                width: 48%; /* Display two containers side by side */
+                display: inline-block;
+                margin-right: 1%;
+            }
+        }
+
+        @media (min-width: 992px) {
+            /* Adjust styles for screens larger than 992 pixels wide (lg) */
+            .order-container {
+                width: 31%; /* Display three containers side by side */
+                margin-right: 2%; /* Adjust margin between containers */
+            }
         }
     </style>
 </head>
@@ -59,10 +77,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.php">Home</a>
+                    <a class="nav-link" href="index.html">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="order.php">Order</a>
+                    <a class="nav-link" href="order.html">Order</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
@@ -73,7 +91,6 @@
             </ul>
         </div>
     </nav>
-
     <!-- Sub Header -->
     <div class="sub-header">
         <h4><?php echo $_SESSION['user'] ?> - Todays Orders</h4>
@@ -102,33 +119,55 @@
 
 
 <script>
+    
     // Fetch orders and update the DOM
     function fetchOrders(status) {
         fetch(`getOrders.php?status=${status}`) // Assuming you have a PHP file to fetch orders
             .then(response => response.json())
             .then(data => {
+                console.log(status);
                 // Update the DOM with the fetched data
-                updateDOM(data);
+                updateDOM(data, status);
             })
             .catch(error => console.error('Error:', error));
     }
 
     // Update the DOM with orders data
-    function updateDOM(orders) {
+    function updateDOM(orders, status) {
         const ordersContainer = document.getElementById('ordersContainer');
         ordersContainer.innerHTML = ''; // Clear previous content
 
         orders.forEach(order => {
             const orderContainer = document.createElement('div');
             orderContainer.className = 'order-container';
+            
+            let actionButtonsHTML = '';
+            if (status === 'In progress') {
+                actionButtonsHTML = `
+                    <button class="btn btn-danger" onclick="voidOrder(${order.OrderID})">Void</button>
+                    <button class="btn btn-success" onclick="completeOrder(${order.OrderID})">Complete</button>
+                `;
+            } else if (status === 'Voided') {
+                actionButtonsHTML = `                
+                    <button class="btn btn-primary" onclick="inProgressOrder(${order.OrderID})">Undo</button>
+                `;
+            } else if (status === 'Completed') {
+                actionButtonsHTML = `
+                    <button class="btn btn-primary" onclick="inProgressOrder(${order.OrderID})">Undo</button>
+                `;
+            }
+            
+            console.log(order.OrderId);
+            console.log(order.TableNumber);
+
 
             orderContainer.innerHTML = `
                 <h5>Order ID: ${order.OrderID}</h5>
                 <p>Table Number: ${order.TableNumber}</p>
                 <div class="order-details" id="orderDetails-${order.OrderID}"></div>
+                <p>Product(s): </p>
                 <div class="order-actions">
-                    <button class="btn btn-danger" onclick="voidOrder(${order.OrderID})">Void</button>
-                    <button class="btn btn-success" onclick="completeOrder(${order.OrderID})">Complete</button>
+                    ${actionButtonsHTML}
                 </div>
             `;
 
@@ -138,14 +177,16 @@
             const orderDetailsContainer = document.getElementById(`orderDetails-${order.OrderID}`);
             order.OrderItems.forEach(item => {
                 const itemDetails = document.createElement('p');
-                itemDetails.textContent = `- ${item.ProductName} x ${item.Quantity}`;
+                itemDetails.textContent = `${item.ProductName}, Quantity: ${item.Quantity}`;
                 orderDetailsContainer.appendChild(itemDetails);
             });
         });
     }
 
+
     // JavaScript functions to handle order actions (complete, void)
     function completeOrder(orderId) {
+        
         fetch('completeOrder.php', {
             method: 'POST',
             headers: {
@@ -170,7 +211,7 @@
         }
     }
 
-                //alert('Order marked as completed. Refresh the page to see changes.');
+                alert('Order marked as completed. Refresh the page to see changes.');
             } else {
                 alert('Failed to mark the order as completed. Please try again.');
             }
@@ -179,6 +220,7 @@
     }
 
     function voidOrder(orderId) {
+        
         fetch('voidOrder.php', {
             method: 'POST',
             headers: {
@@ -201,14 +243,50 @@
                     orderContainer.remove();
                 break; // Once the order is found and removed, exit the loop
                 }   
-                }      
-                //alert('Order voided. Refresh the page to see changes.');
+            }   
+
+                alert('Order voided. Refresh the page to see changes.');
             } else {
                 alert('Failed to void the order. Please try again.');
             }
         })
         .catch(error => console.error('Error:', error));
     }
+
+    // JavaScript functions to handle order actions (complete, void, in-progress)
+    function inProgressOrder(orderId) {
+        fetch('inProgressOrder.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                orderId: orderId,
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Check if the order is set to in progress successfully
+            if (data.success) {
+                // Remove the order from the DOM
+                const orderContainers = document.getElementsByClassName('order-container');
+                for (const orderContainer of orderContainers) {
+                    const orderOrderId = orderContainer.querySelector('h5').textContent.split(': ')[1]; // Assuming h5 contains "Order ID: xxx"
+
+                    if (orderOrderId === orderId.toString()) {
+                        orderContainer.remove();
+                        break; // Once the order is found and removed, exit the loop
+                    }
+                }
+
+                alert('Order set to In Progress. Refresh the page to see changes.');
+            } else {
+                alert('Failed to set the order to In Progress. Please try again.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
 
     // Fetch orders on page load
     fetchOrders();

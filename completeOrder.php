@@ -20,12 +20,12 @@ $getOrderProductsQuery = "
 ";
 
 try {
-    // Update the order status in the database
-    $updateOrderStatus = "UPDATE ORDERS SET `Status` = 'Completed' WHERE OrderID = :orderId AND BranchID = :branch";
-    $stmt = $mysql->prepare($updateOrderStatus);
-    $stmt->bindParam(':orderId', $orderId);
-    $stmt->bindParam(':branch', $branch);
-    $stmt->execute();
+        // Void the order in the database
+        $updateOrderStatus = "UPDATE ORDERS SET `Status` = 'Completed' WHERE OrderID = :orderId AND BranchID = :branch";
+        $stmt = $mysql->prepare($updateOrderStatus);
+        $stmt->bindParam(':orderId', $orderId);
+        $stmt->bindParam(':branch', $branch);
+        $stmt->execute();
 
     // Fetch order products and quantities
     $stmt = $mysql->prepare($getOrderProductsQuery);

@@ -13,13 +13,11 @@
     $branch = $_SESSION['branch'];
 
     try {
-        
-        $orderId = intval($orderId);
-
         // Void the order in the database
-        $voidOrder = "CALL voidOrder(:orderId)";
-        $stmt = $mysql->prepare($voidOrder);
-        $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
+        $inProgressOrder = "UPDATE ORDERS SET `Status` = 'In Progress' WHERE OrderID = :orderId AND BranchID = :branch";
+        $stmt = $mysql->prepare($inProgressOrder);
+        $stmt->bindParam(':orderId', $orderId);
+        $stmt->bindParam(':branch', $branch);
         $stmt->execute();
 
         // Return a success response
