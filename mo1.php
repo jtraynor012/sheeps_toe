@@ -97,6 +97,9 @@
     </div>
 
     <?php
+        if(!isset($_SESSION['user']) || $_SESSION['role'] != "Manager" && $_SESSION['role'] != "Staff"){
+            header("location: login.php");
+        }
         if($_SESSION['role'] == "Manager"){
             echo '<div class="container my-3">
                     <a class="nav-link" href="manage.php">Go back to Manager Access</a>
