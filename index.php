@@ -17,7 +17,7 @@
         }
 
         .hero {
-            background: url('pub_photo.png') no-repeat center center;
+            background: url('pub_photo_jpg.jpg') no-repeat center center;
             padding: 250px 0;
             background-size: cover;
             text-align: center;

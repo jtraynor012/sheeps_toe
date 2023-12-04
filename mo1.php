@@ -59,10 +59,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
-                    <a class="nav-link" href="index.html">Home</a>
+                    <a class="nav-link" href="index.php">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="order.html">Order</a>
+                    <a class="nav-link" href="order.php">Order</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
@@ -138,7 +138,7 @@
             const orderDetailsContainer = document.getElementById(`orderDetails-${order.OrderID}`);
             order.OrderItems.forEach(item => {
                 const itemDetails = document.createElement('p');
-                itemDetails.textContent = `Product: ${item.ProductName}, Quantity: ${item.Quantity}`;
+                itemDetails.textContent = `- ${item.ProductName} x ${item.Quantity}`;
                 orderDetailsContainer.appendChild(itemDetails);
             });
         });
@@ -170,7 +170,7 @@
         }
     }
 
-                alert('Order marked as completed. Refresh the page to see changes.');
+                //alert('Order marked as completed. Refresh the page to see changes.');
             } else {
                 alert('Failed to mark the order as completed. Please try again.');
             }
@@ -202,7 +202,7 @@
                 break; // Once the order is found and removed, exit the loop
                 }   
                 }      
-                alert('Order voided. Refresh the page to see changes.');
+                //alert('Order voided. Refresh the page to see changes.');
             } else {
                 alert('Failed to void the order. Please try again.');
             }
