@@ -83,18 +83,45 @@
                 </li>
                 <?php
                     session_start();
+                    if(isset($_GET['logout'])){
+                        session_unset();
+                    }
                     if(isset($_SESSION['user'])){
+                        if(isset($_SESSION['role']) && $_SESSION['role'] == "Manager"){
+                            echo '<li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
+                                    $_SESSION["user"]
+                                .'</a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="logoutDropdown">
+                                    <a class="dropdown-item" href="index.php?logout">'.$_SESSION["user"].' - Logout</a>
+                                    <a class="dropdown-item" href="manage.php">Manage</a>
+                                </div>
+                            </li>';
+                        }
+                        elseif(isset($_SESSION['role']) && $_SESSION['role'] == "Staff"){
+                            echo '<li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
+                                    $_SESSION["user"]
+                                .'</a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="logoutDropdown">
+                                    <a class="dropdown-item" href="index.php?logout">'.$_SESSION["user"].' - Logout</a>
+                                    <a class="dropdown-item" href="mo1.php">View Orders</a>
+                                </div>
+                            </li>';
+                        }
+                        else{
 
                         echo '<li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
                                     $_SESSION["user"]
                                 .'</a>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="logoutDropdown">
-                                    <a class="dropdown-item" href="index.php">'.$_SESSION["user"].' - Logout" ?></a>
+                                    <a class="dropdown-item" href="index.php?logout">'.$_SESSION["user"].' - Logout</a>
                                     <a class="dropdown-item text-danger" href="deleteAccount.php">Delete Account</a>
                                 </div>
                             </li>';
                             session_unset();
+                        }
                     }
                     else{
                         echo '<li class="nav-item">
