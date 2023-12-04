@@ -14,22 +14,29 @@
         return $branchID;
     }
     //adds the order to the ORDERS table. Since order has not been completed, TimeCompleted is null and Status is 'In progress'.
-    function addOrder($branchID,$customerID,$timePlaced,$tableNumber,$mysql){
-        $query = "INSERT INTO ORDERS (`BranchID`, `CustomerID`,`TimePlaced`,`TimeCompleted`,`Status`,`TableNumber`) VALUES (?,?,?,NULL,'In progress',?)";
+    function addOrder($branchID, $customerID, $tableNumber, $mysql) {
+        $query = "CALL addOrder(:branchID, :customerID, :tableNumber, @newOrderID)";
         $stmt = $mysql->prepare($query);
-        $stmt->bindParam(1,$branchID);
-        $stmt->bindParam(2,$customerID);
-        $stmt->bindParam(3,$timePlaced);                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
-        $stmt->bindParam(4,$tableNumber);
-        $result = $stmt->execute();
-        if ($result) {
-            $inserted_id = $mysql->lastInsertId();
-            return intval($inserted_id);
-        }else{
+        $stmt->bindParam(':branchID', $branchID);
+        $stmt->bindParam(':customerID', $customerID);
+        $stmt->bindParam(':tableNumber', $tableNumber);
+
+        /*
+            After changing from a query to a stored procedure, I was unable to initially get the 
+            inserted ID using $mysql->lastInsertedId(); and was unable to find the method.
+            chatGPT link: https://chat.openai.com/share/e9c69da5-0fe4-4528-a1f4-cadd03fbb036
+            you will also see the previous version of the code in the paste in the chat logs. 
+        */
+        if ($stmt->execute()) {
+            // Retrieve the newOrderID set by the stored procedure
+            $res = $mysql->query("SELECT @newOrderID AS newOrderID")->fetch(PDO::FETCH_ASSOC);
+            return $res['newOrderID'];
+        } else {
             $errorInfo = $stmt->errorInfo();
-            return "Error" . implode(";",$errorInfo);
+            return "Error: " . implode(";", $errorInfo);
         }
     }
+    
     //splits the product's in the order to just one product each and their respective quantity ordered. 
     function splitProducts($stringProducts){
         $splitUpProducts = explode("!", $stringProducts);
@@ -46,7 +53,7 @@
         $name = "";
         $size = sizeof($productName);
         if($size>1){
-          //Capitalise each character in the word
+          //Capitalises each character in the word
           for($i=1;$i<$size;$i++){
             $productName[$i] = ucfirst($productName[$i]);
           }
@@ -119,25 +126,24 @@
                 $productName = getProductName($breakdown[0]);
                 $quantity = intval($breakdown[1]);
                 $productID = intval(getProductID($productName, $mysql));
-                $price = number_format(floatval(getPrice($productID,$mysql)),2,'.','');
-                $orderCost = number_format(floatval(getOrderCost($productID,$mysql)),2,'.','');
-                $price = floatval($price);
-                $orderCost = floatval($orderCost);
-
-                // return $string = $orderID." ".$productID." ".$quantity;
-                $query = "INSERT INTO ORDER_PRODUCTS (`OrderID`, `ProductID`, `Quantity`, `RetailPriceAtOrder`, `ProductOrderCostAtOrder`) VALUES (:orderID, :productID, :quantity, :price, :productOrderCost)";
+                $price = number_format(floatval(getPrice($productID, $mysql)), 2, '.', '');
+                $orderCost = number_format(floatval(getOrderCost($productID, $mysql)), 2, '.', '');
+    
+                $query = "CALL addToOrderProducts(:orderID, :productID, :quantity, :price, :orderCost, @_ProductOrderID)";
                 $stmt = $mysql->prepare($query);
-                $stmt->bindParam(':orderID', $orderID);
-                $stmt->bindParam(':productID', $productID);
-                $stmt->bindParam(':quantity', $quantity);
-                $stmt->bindParam(':price', $price);
-                $stmt->bindParam(':productOrderCost', $orderCost);
-                $queryResult = $stmt->execute();
-                if($queryResult){
-                    array_push($result,intval($mysql->lastInsertId()));
-                }
+                $stmt->bindParam(':orderID', $orderID, PDO::PARAM_INT);
+                $stmt->bindParam(':productID', $productID, PDO::PARAM_INT);
+                $stmt->bindParam(':quantity', $quantity, PDO::PARAM_INT);
+                $stmt->bindParam(':price', $price, PDO::PARAM_STR);
+                $stmt->bindParam(':orderCost', $orderCost, PDO::PARAM_STR);
+    
+                $stmt->execute();
+                $stmt = $mysql->query("SELECT @_ProductOrderID");
+                $res = $stmt->fetch(PDO::FETCH_ASSOC);
+                $_ProductOrderID = $res['@_ProductOrderID'];
+                array_push($result, intval($_ProductOrderID));
             }
-            return "Order successfully placed!";
+            return json_encode($result);
         } catch (PDOException $e) {
             return [
                 'error' => $e->getMessage(),
@@ -150,20 +156,19 @@
                 ]
             ];
         }
-    }    
+    }
+    
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $rawData = file_get_contents('php://input');
         $orderData = json_decode($rawData,true);
-
         if($orderData) {
             $stringProducts = $orderData['stringProducts'];
-            $timePlaced = $orderData['currentDate'];
-            $tableNumber = $orderData['tableNumber'];
+//            $tableNumber = $orderData['tableNumber'];
             $customerID = $orderData['customerID'];
             $branch = $orderData['branch'];
             $branchID = getBranchFromName($branch,$mysql);
-            $orderID = addOrder($branchID,$customerID,$timePlaced,$tableNumber,$mysql);
+            $orderID = addOrder($branchID,$customerID,$tableNumber,$mysql);
             $productArray = splitProducts($stringProducts);
             $addToOrder_Products = addOrderProducts($orderID,$productArray,$mysql);
             echo json_encode(["status" => "success", "message" => $addToOrder_Products]);
