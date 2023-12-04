@@ -101,8 +101,14 @@ if(isset($_GET["logout"])){
         <a class="nav-link" href="manage.php">Go back to Manager Access</a>
     </div>
 
+    <div class="container text-center">
+        <div class="row">
+            <h4 id="total-today"></h4> 
+        </div>
+    </div>
+
     <!-- Chart Container -->
-    <div class="container-fluid text-center">
+    <div class="container text-center">
         <div class="row mt-5">
             <div class="col-md-6" id="product-by-day-section">
                 <h4 class="text-center">Product by day of the week (average)</h4>
@@ -200,6 +206,7 @@ if(isset($_GET["logout"])){
                 }
             })
 
+            
             //fetch product categories
             fetch("getCategories.php")
             .then(response => {
@@ -216,6 +223,26 @@ if(isset($_GET["logout"])){
                     optionElement.text = data[i];
 
                     categorySelect.appendChild(optionElement);
+                }
+            })
+
+            todayDate = new Date().toJSON().slice(0,10);
+
+            fetch("getProfitByDay.php?dateFrom="+todayDate+"&dateTo="+todayDate)
+            .then(response => {
+                if(!response.ok){
+                    throw new Error("Network response not ok");
+                }
+                return response.json();
+            })
+            .then(data =>{
+                todayTotal = document.getElementById("total-today");
+                if(data.Profit){
+                    
+                    todayTotal.innerHTML = 'Todays Totals: ' + data.Profit;
+                }
+                else{
+                    todayTotal.innerHTML = 'Todays Totals: £0.00';
                 }
             })
 
@@ -326,14 +353,12 @@ if(isset($_GET["logout"])){
 
 
                     data.forEach(entry => {
-                        const dayOfWeek = new Date(entry.timeCompleted).toLocaleDateString('en-US', { weekday: 'long' });
-                        const retailPrice = parseFloat(entry.retailPrice);
-                        const costPrice = parseFloat(entry.costPrice);
-                        const profit = retailPrice - costPrice;
+                        const dayOfWeek = new Date(entry.TimeCompleted).toLocaleDateString('en-US', { weekday: 'long' });
+                        const profit = entry.Profit;
 
                         daySales[dayOfWeek].totalProfit += profit;
                         daySales[dayOfWeek].count += 1;
-                        daySales[dayOfWeek].uniqueWeeks.add(getWeekNumber(new Date(entry.timeCompleted)));
+                        daySales[dayOfWeek].uniqueWeeks.add(getWeekNumber(new Date(entry.TimeCompleted)));
                     });
 
                     const averageSales = {};

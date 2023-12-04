@@ -10,12 +10,10 @@
     $branchID = intval($_SESSION['branch']);
 
     try{
-
-        $query = "SELECT op.RetailPriceAtOrder, op.ProductOrderCostAtOrder, o.TimeCompleted
-                FROM ORDER_PRODUCTS op, ORDERS o
-                WHERE op.OrderID = o.OrderID
-                AND (o.TimeCompleted BETWEEN :dateFrom AND :dateTo)
-                AND o.BranchID = :branchID";
+        $query = "SELECT Profit, TimeCompleted
+                FROM OrderStatisticsView
+                WHERE TimeCompleted BETWEEN :dateFrom AND :dateTo
+                AND BranchID = :branchID";
 
         $stmt = $mysql->prepare($query);
         $stmt->bindParam(':dateFrom', $dateFrom, PDO::PARAM_STR);
@@ -28,9 +26,8 @@
 
         foreach($result as $row){
             $entry = array(
-                'retailPrice' => $row['RetailPriceAtOrder'],
-                'costPrice' => $row['ProductOrderCostAtOrder'],
-                'timeCompleted' => $row['TimeCompleted']
+                'Profit' => floatval($row['Profit']),
+                'TimeCompleted' => $row['TimeCompleted']
             );
             $response[] = $entry;
         }
