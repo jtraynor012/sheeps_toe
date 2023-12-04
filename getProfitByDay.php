@@ -5,8 +5,8 @@
     $dateFrom = $_GET['dateFrom'];
     $dateTo = $_GET['dateTo'];
 
-    $dateFrom = date("Y-m-d", strtotime($dateFrom));
-    $dateTo = date("Y-m-d", strtotime($dateTo));
+    $dateFrom = date("Y-m-d H:i:s", strtotime($dateFrom . '00:00:00'));
+    $dateTo = date("Y-m-d H:i:s", strtotime($dateTo . '23:59:59'));
     $branchID = intval($_SESSION['branch']);
 
     try{

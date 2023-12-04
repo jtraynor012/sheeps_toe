@@ -3,10 +3,10 @@
     include "db.php";
 
     $dateFrom = $_GET['dateFrom'];
-    $dateFrom = date("Y-m-d", strtotime($dateFrom));
+    $dateFrom = date("Y-m-d H:i:s", strtotime($dateFrom . '00:00:00'));
 
     $dateTo = $_GET['dateTo'];
-    $dateTo = date("Y-m-d", strtotime($dateTo));
+    $dateTo = date("Y-m-d H:i:s", strtotime($dateTo . '23:59:59'));
 
     $category = $_GET['category'];
     $branchID = $_SESSION['branch'];

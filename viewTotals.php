@@ -236,14 +236,13 @@ if(isset($_GET["logout"])){
                 return response.json();
             })
             .then(data =>{
+                let totalProfit = 0.0;
+                data.forEach(today =>{
+                    totalProfit += today.Profit;
+                    console.log(today.profit);                
+                })
                 todayTotal = document.getElementById("total-today");
-                if(data.Profit){
-                    
-                    todayTotal.innerHTML = 'Todays Totals: ' + data.Profit;
-                }
-                else{
-                    todayTotal.innerHTML = 'Todays Totals: £0.00';
-                }
+                todayTotal.innerHTML = 'Todays Totals: £' + totalProfit;
             })
 
 
@@ -260,7 +259,7 @@ if(isset($_GET["logout"])){
                     if (!response.ok) {
                         throw new Error("Network response was not ok");
                     }
-                    return response.text();
+                    return response.json();
                 })
                 .then(data => {
                     graphProductByDay(data);
@@ -270,15 +269,12 @@ if(isset($_GET["logout"])){
                 });
             }
             function graphProductByDay(data){
-                product_data = data.split("<br>");
                 const data_labels = [];
                 const data_points = [];
-                for(var i = 0; i < product_data.length; i++){
-                    var pair = product_data[i].split(",");
-                    data_labels.push(pair[0]);
-                    data_points.push(pair[1]);
-                }
-
+                data.forEach(productDay => {
+                    data_labels.push(productDay.day);
+                    data_points.push(productDay.average);
+                })
                 const productbd = document.getElementById("product-by-day").getContext("2d");
                 // Check if the Chart instance already exists
                 console.log(data_points);

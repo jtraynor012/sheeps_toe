@@ -19,10 +19,10 @@
 
     try{
 
-        $query = "SELECT TimeCompleted, Quantity, MostDistantDate, MostRecentDate, NumberOfWeeks
+        $query = "SELECT TimeCompleted, Quantity, NumberOfWeeks
                 FROM OrderStatisticsView
                 WHERE BranchID = :branchID AND
-                    ProductID = :productID AND";
+                    ProductID = :productID";
 
 
         $stmt = $mysql->prepare($query);
@@ -51,11 +51,15 @@
             $averageSales[$day] = $totalSales / $weeks;
         }
 
-        $reply = "";
+        $response = [];
         foreach ($averageSales as $day => $average){
-            $reply .=$day.",".$average."<br>";
+            $entry = array(
+                'day' => $day,
+                'average' => $average
+            );
+            $response[] = $entry;
         }
-        echo $reply;
+        echo json_encode($response);
 
     } catch (PDOException $e){
         echo $sql . "<br>" . $e->getMessage();
