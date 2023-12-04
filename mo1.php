@@ -96,6 +96,14 @@
         <h4><?php echo $_SESSION['user'] ?> - Todays Orders</h4>
     </div>
 
+    <?php
+        if($_SESSION['role'] == "Manager"){
+            echo '<div class="container my-3">
+                    <a class="nav-link" href="manage.php">Go back to Manager Access</a>
+                </div>';
+        }
+    ?>
+
     <div class="btn-group" role="group" aria-label="Filter Orders">
         <button type="button" class="btn btn-secondary" onclick="fetchOrders('In progress')">In Progress</button>
         <button type="button" class="btn btn-secondary" onclick="fetchOrders('Voided')">Voided</button>
