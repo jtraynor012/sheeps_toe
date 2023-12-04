@@ -73,6 +73,7 @@
             </ul>
         </div>
     </nav>
+
     <!-- Sub Header -->
     <div class="sub-header">
         <h4><?php echo $_SESSION['user'] ?> - Todays Orders</h4>
@@ -145,7 +146,6 @@
 
     // JavaScript functions to handle order actions (complete, void)
     function completeOrder(orderId) {
-        
         fetch('completeOrder.php', {
             method: 'POST',
             headers: {
@@ -179,7 +179,6 @@
     }
 
     function voidOrder(orderId) {
-        
         fetch('voidOrder.php', {
             method: 'POST',
             headers: {
@@ -202,8 +201,7 @@
                     orderContainer.remove();
                 break; // Once the order is found and removed, exit the loop
                 }   
-            }   
-
+                }      
                 alert('Order voided. Refresh the page to see changes.');
             } else {
                 alert('Failed to void the order. Please try again.');
