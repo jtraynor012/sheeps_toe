@@ -97,6 +97,9 @@ ob_flush();
                 <a class="nav-link" href="mo2.php">Manage Products</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link" href="pastOrders.php">View Past Orders</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link" href="viewTotals.php">View Totals</a>
             </li>
         </ul>
