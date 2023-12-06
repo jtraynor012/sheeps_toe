@@ -162,7 +162,6 @@
                                         <a class="dropdown-item text-danger" href="deleteAccount.php">Delete Account</a>
                                     </div>
                                 </li>';
-                            session_unset();
                         }
                     }
                 ?>
