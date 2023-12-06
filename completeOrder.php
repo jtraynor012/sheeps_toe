@@ -12,6 +12,12 @@ $orderId = intval($orderId);
 // Retrieve the branch from the session
 $branch = $_SESSION['branch'];
 
+//$getOrderProductsQuery = "
+    //SELECT ProductID, Quantity
+    //FROM OrderProductsView
+    //WHERE OrderProductsView.ProductID = :orderId;
+//";
+
 $getOrderProductsQuery = "
     SELECT p.ProductID, op.Quantity
     FROM ORDER_PRODUCTS op
@@ -20,34 +26,40 @@ $getOrderProductsQuery = "
 ";
 
 try {
+        $orderId = intval($orderId);
+
         // Void the order in the database
-        $updateOrderStatus = "UPDATE ORDERS SET `Status` = 'Completed' WHERE OrderID = :orderId AND BranchID = :branch";
+        $updateOrderStatus = "CALL completeOrder(:orderId)";
         $stmt = $mysql->prepare($updateOrderStatus);
+        $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Fetch order products and quantities
+        $stmt = $mysql->prepare($getOrderProductsQuery);
         $stmt->bindParam(':orderId', $orderId);
-        $stmt->bindParam(':branch', $branch);
         $stmt->execute();
+        $orderProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Fetch order products and quantities
-    $stmt = $mysql->prepare($getOrderProductsQuery);
-    $stmt->bindParam(':orderId', $orderId);
-    $stmt->execute();
-    $orderProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Update stock levels for each product in the order
+        //$updateStockLevelsQuery = "
+            //CALL UpdateStockLevels(:ProductID, :BranchID, :Quantity)
+        //";
 
-    // Update stock levels for each product in the order
-    $updateStockLevelsQuery = "
-        UPDATE STOCK
-        SET Count = Count - :quantity
-        WHERE ProductID = :productId
-          AND BranchID = :branchId
-    ";
+        // Update stock levels for each product in the order
+        $updateStockLevelsQuery = "
+            UPDATE STOCK
+            SET Count = Count - :quantity
+            WHERE ProductID = :productId
+            AND BranchID = :branchId
+        ";
 
-    foreach ($orderProducts as $product) {
-        $stmt = $mysql->prepare($updateStockLevelsQuery);
-        $stmt->bindParam(':quantity', $product['Quantity'], PDO::PARAM_INT);
-        $stmt->bindParam(':productId', $product['ProductID'], PDO::PARAM_INT);
-        $stmt->bindParam(':branchId', $branch, PDO::PARAM_INT);
-        $stmt->execute();
-    }
+        foreach ($orderProducts as $product) {
+            $stmt = $mysql->prepare($updateStockLevelsQuery);
+            $stmt->bindParam(':quantity', $product['Quantity'], PDO::PARAM_INT);
+            $stmt->bindParam(':productId', $product['ProductID'], PDO::PARAM_INT);
+            $stmt->bindParam(':branchId', $branch, PDO::PARAM_INT);
+            $stmt->execute();
+        }
 
     // Return a success response
     echo json_encode(array('success' => true));
