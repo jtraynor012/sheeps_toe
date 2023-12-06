@@ -18,6 +18,7 @@ function verify($email, $password) {
     $stmt->execute();
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+
     if ($result) {
         // Email found, check password
         if ($hashedPassword == $result['Password']) {
@@ -38,27 +39,24 @@ function verify($email, $password) {
 
                 $_SESSION['branch'] = $result['BranchID'];
 
-                echo "<br>".$_SESSION['id'];
-                if(!$_SESSION['branch']){
-                    echo "BranchID not fetched...";
-                }
+
 
                 if ($_SESSION['role'] == 'Manager') {
-                    echo $_SESSION['branch'];
-                    if(!$_SESSION['branch']){
-                        echo "BranchID not fetched...";
-                    }
                     header("location: manage.php");
                 }
                 else {
+<<<<<<< Updated upstream
                     echo $_SESSION['branch'];
                     if(!$_SESSION['branch']){
                         echo "BranchID not fetched...";
                     }
                     header("location: order.php"); //CHANGE THIS TO STAFF LANDING PAGE
+=======
+                    header("location: mo1.php"); //CHANGE THIS TO STAFF LANDING PAGE
+>>>>>>> Stashed changes
                 }
             }
-            //exit;
+            exit;
         } else {
             header("location: login.php?msg=unauth");
             exit;
@@ -76,6 +74,7 @@ function verify($email, $password) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['uname'];
     $password = $_POST['pword'];
+    echo "I am in main";
     verify($email, $password);
 }
 ?>
