@@ -8,6 +8,7 @@
         $stmt->bindParam(":custID", $_SESSION['id'], PDO::PARAM_INT);
         $stmt->execute();
 
+        session_unset();
         header("location: login.php");
         exit;
 

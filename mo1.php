@@ -85,9 +85,40 @@
                 <li class="nav-item">
                     <a class="nav-link" href="contact.html">Contact</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="?logout"><?php echo $_SESSION['user'] ?> - Logout</a>
-                </li>
+                <?php
+                    session_start();
+                    if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager" || $_SESSION['role'] != "Staff"){
+                        header("location: login.php");
+                    }
+                    if(isset($_GET['logout'])){
+                        session_unset();
+                        header("location: login.php");
+                    }
+                    if(isset($_SESSION['user'])){
+                        if(isset($_SESSION['role']) && $_SESSION['role'] == "Manager"){
+                            echo '<li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
+                                    $_SESSION["user"]
+                                .'</a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="logoutDropdown">
+                                    <a class="dropdown-item" href="index.php?logout">'.$_SESSION["user"].' - Logout</a>
+                                    <a class="dropdown-item" href="manage.php">Manage</a>
+                                </div>
+                            </li>';
+                        }
+                        elseif(isset($_SESSION['role']) && $_SESSION['role'] == "Staff"){
+                            echo '<li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
+                                    $_SESSION["user"]
+                                .'</a>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="logoutDropdown">
+                                    <a class="dropdown-item" href="index.php?logout">'.$_SESSION["user"].' - Logout</a>
+                                    <a class="dropdown-item" href="mo1.php">View Orders</a>
+                                </div>
+                            </li>';
+                        }
+                    }
+                ?>
             </ul>
         </div>
     </nav>
@@ -96,8 +127,16 @@
         <h4><?php echo $_SESSION['user'] ?> - Todays Orders</h4>
     </div>
 
+    <?php
+        if($_SESSION['role'] == "Manager"){
+            echo `<div class="container my-3">
+                    <a class="nav-link" href="manage.php">Go back to Manager Access</a>
+                </div>`;
+        }
+    ?>
+
     <div class="btn-group" role="group" aria-label="Filter Orders">
-        <button type="button" class="btn btn-secondary" onclick="fetchOrders('In progress')">In Progress</button>
+        <button type="button" class="btn btn-secondary" onclick="fetchOrders('In progress')" id="in-progress-btn">In Progress</button>
         <button type="button" class="btn btn-secondary" onclick="fetchOrders('Voided')">Voided</button>
         <button type="button" class="btn btn-secondary" onclick="fetchOrders('Completed')">Completed</button>
     </div>
@@ -119,7 +158,11 @@
 
 
 <script>
-    
+    document.addEventListener("DOMContentLoaded", function () {
+        const inProgress = document.getElementById("in-progress-btn").click();
+    });
+
+
     // Fetch orders and update the DOM
     function fetchOrders(status) {
         fetch(`getOrders.php?status=${status}`) 
@@ -184,7 +227,7 @@
     }
 
 
-    // JavaScript functions to handle order actions (complete, void)
+    //functions to handle order actions (complete, void)
     function completeOrder(orderId) {
         
         fetch('completeOrder.php', {
