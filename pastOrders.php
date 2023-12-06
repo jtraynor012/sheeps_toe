@@ -40,6 +40,10 @@
             text-decoration: underline;
         }
 
+        #order-details-container {
+            border: 1px solid #ccc;
+        }
+
         .sub-header::after {
           content: "";
           display: block;
@@ -75,6 +79,9 @@
                 </li>
                 <?php
                     session_start();
+                    if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
+                        header("location: login.php");
+                    }
                     if(isset($_GET['logout'])){
                         session_unset();
                     }
@@ -113,12 +120,30 @@
     </div>
 
     <div class="container">
-        <div class="row text-center">
-            
+        <div class="row">
+            <div class="col-5">
+                <div class="container">
+                    <h3 class="text-center">Order List</h3>
+                    <!-- Order list -->
+                    <ul class="order-list" id="order-list">
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-7 text-center">
+                <h3>Order Details</h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Placeholder for order details -->
+                        <ul class="list-group" id="order-details-container">
+                            <li class="list-group-item">Select an order to view details.</li>
+                        </ul>
+                        <!-- Button to generate PDF -->
+                        <button id="generate-pdf-button" class="btn btn-primary mt-3">Generate PDF</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
-    <div class="past-order-list"></div>
 
     <!-- Pagination -->
     <div class="container my-3">
@@ -134,8 +159,20 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script
+			src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+			integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+			crossorigin="anonymous"
+			referrerpolicy="no-referrer"
+		></script>
+    
     <script>
         document.addEventListener("DOMContentLoaded", function () {
+        var generatePDFButton = document.getElementById("generate-pdf-button");
+        generatePDFButton.addEventListener("click", generatePDF);
+        createOrderList();
+
+        function createOrderList(){
             fetch("getPastOrders.php")
             .then(response => {
                 if(!response.ok){
@@ -144,14 +181,83 @@
                 return response.json();
             })
             .then(data => {
-                const pastOrderSection = document.getElementById("past-order-list");
-                data.foreach(order => {
-                    
-                })
+                var orderListContainer = document.getElementById("order-list");
+                data.forEach(function (order) {
+                    var li = document.createElement("li");
+                    li.textContent = `Order ID: ${order.OrderID} | Customer Name: ${order.CustomerName} | Total: £${order.TotalOrderValue} | Date: ${order.TimeCompleted}`;
+                    li.classList.add('list-group-item');
+                    li.addEventListener("click", function () {
+                        toggleHighlightOrder(li, order.OrderID);
+                        fetchOrderDetails(order.OrderID);
+                    });
+                    orderListContainer.appendChild(li);
+                });
             })
+        }
 
+        // Function to toggle the highlight of the selected order
+        function toggleHighlightOrder(selectedOrder, orderID) {
+                // Check if the selected order is already highlighted
+                var isHighlighted = selectedOrder.classList.contains("active");
+
+                // Remove previous highlights
+                var previousHighlight = document.querySelector(".list-group-item.active");
+                if (previousHighlight) {
+                    previousHighlight.classList.remove("active");
+                }
+
+                // If the selected order was not previously highlighted, highlight it
+                if (!isHighlighted) {
+                    selectedOrder.classList.add("active");
+                } else {
+                    selectedOrder.classList.remove("active");
+                    var detailsContainer = document.getElementById("order-details-container");
+                    detailsContainer.innerHTML = `<h4>Select an order to view details...</h4>`;
+                }
+            }
+
+            function fetchOrderDetails(orderID) {
+                var detailsContainer = document.getElementById("order-details-container");
+                detailsContainer.innerHTML = `<h4>Order Details</h4><p>Loading...</p>`;
+
+                fetch("getOrderBreakdown.php?OrderID="+encodeURIComponent(orderID))
+                .then(response => {
+                    if(!response.ok){
+                        throw new Error("Network response was no ok");
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const orderDetailsHTML =`
+                        <div class="receipt">
+                            <h5>Order ID: ${orderID}</h5>
+                            <p>Customer Name: ${data.Details.CustomerName}</p>
+                            <p>Branch Name: ${data.Details.BranchName}</p>
+                            <p>Order Time: ${data.Details.OrderTime}</p>
+                            <hr>
+                            ${data.Products.map(product => `
+                                <p>${product.ProductOrderedInfo.ProductName} x ${product.ProductOrderedInfo.Quantity} - £${parseFloat(product.ProductOrderedInfo.totalPricePerProduct).toFixed(2)}</p>
+                            `).join('')}
+                            <hr>
+                            <p>Total: £${parseFloat(data.Details.TotalOrderValue).toFixed(2)}</p>
+                        </div>`;
+                    detailsContainer.innerHTML = orderDetailsHTML;
+
+                })
+                .catch(error => {
+                    console.error("Error fetching order details: ", error);
+                    detailsContainer.innerHTML = "<h4>Error</h4><p>Failed to fetch order details.</p>";
+                })
+            }
+
+            function generatePDF(){
+                const receipt = document.getElementById("order-details-container");
+                html2pdf().from(receipt).save();
+            }
 
         })
+
+
     </script>
 
 </body>

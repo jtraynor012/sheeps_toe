@@ -225,12 +225,13 @@
             <div class="row mt-5">
                 <div class="col-md-3">
                     <div class="categories list-group" id="categories">
-                        <button class="list-group-item" onclick="getProducts('Draught')">Draught</li>
-                        <button class="list-group-item" onclick="getProducts('Bottles')">Bottles</li>
-                        <button class="list-group-item" onclick="getProducts('Vodka')">Vodka</li>
-                        <button class="list-group-item" onclick="getProducts('Gins')">Gin</li>
-                        <button class="list-group-item" onclick="getProducts('Rums')">Rum</li>
-                        <button class="list-group-item" onclick="getProducts('Snacks')">Snacks</li>
+                        <button class="list-group-item" onclick="getProducts('Draught')">Draught</button>
+                        <button class="list-group-item" onclick="getProducts('Bottles')">Bottles</button>
+                        <button class="list-group-item" onclick="getProducts('Vodka')">Vodka</button>
+                        <button class="list-group-item" onclick="getProducts('Whisky')">Whisky</button>
+                        <button class="list-group-item" onclick="getProducts('Gins')">Gin</button>
+                        <button class="list-group-item" onclick="getProducts('Rums')">Rum</button>
+                        <button class="list-group-item" onclick="getProducts('Snacks')">Snacks</button>
                     </div>
                 </div>
                 <div class="col-md-7">

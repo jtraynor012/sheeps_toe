@@ -2,6 +2,8 @@
     session_start();
     include "db.php";
 
+    $branchID = $_SESSION['branch'];
+
     try{
         $query = "SELECT * FROM OrderSummary WHERE BranchID = :branchID";
         $stmt = $mysql->prepare($query);
