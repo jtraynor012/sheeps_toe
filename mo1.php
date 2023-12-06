@@ -87,7 +87,7 @@
                 </li>
                 <?php
                     session_start();
-                    if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager" || $_SESSION['role'] != "Staff"){
+                    if(!isset($_SESSION['role']) || $_SESSION['role'] == "Customer"){
                         header("location: login.php");
                     }
                     if(isset($_GET['logout'])){
@@ -95,7 +95,7 @@
                         header("location: login.php");
                     }
                     if(isset($_SESSION['user'])){
-                        if(isset($_SESSION['role']) && $_SESSION['role'] == "Manager"){
+                        if(isset($_SESSION['role']) && $_SESSION['role'] == 'Manager'){
                             echo '<li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
                                     $_SESSION["user"]
@@ -128,10 +128,10 @@
     </div>
 
     <?php
-        if($_SESSION['role'] == "Manager"){
-            echo `<div class="container my-3">
+        if($_SESSION['role'] == 'Manager'){
+            echo '<div class="container my-3">
                     <a class="nav-link" href="manage.php">Go back to Manager Access</a>
-                </div>`;
+                </div>';
         }
     ?>
 

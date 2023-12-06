@@ -12,12 +12,6 @@ $orderId = intval($orderId);
 // Retrieve the branch from the session
 $branch = $_SESSION['branch'];
 
-//$getOrderProductsQuery = "
-    //SELECT ProductID, Quantity
-    //FROM OrderProductsView
-    //WHERE OrderProductsView.ProductID = :orderId;
-//";
-
 $getOrderProductsQuery = "
     SELECT p.ProductID, op.Quantity
     FROM ORDER_PRODUCTS op
