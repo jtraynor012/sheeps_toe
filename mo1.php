@@ -122,7 +122,7 @@
     
     // Fetch orders and update the DOM
     function fetchOrders(status) {
-        fetch(`getOrders.php?status=${status}`) // Assuming you have a PHP file to fetch orders
+        fetch(`getOrders.php?status=${status}`) 
             .then(response => response.json())
             .then(data => {
                 console.log(status);

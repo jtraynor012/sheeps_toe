@@ -79,9 +79,6 @@
                 </li>
                 <?php
                     session_start();
-                    if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
-                        header("location: login.php");
-                    }
                     if(isset($_GET['logout'])){
                         session_unset();
                     }
@@ -120,7 +117,7 @@
     </div>
 
     <div class="container my-3">
-        <a class="nav-link" href="manage.php">Go back to Manager Access</a>
+        <a class="nav-link" href="order.php">Go back to order</a>
     </div>
 
     <div class="container">
@@ -177,7 +174,7 @@
         createOrderList();
 
         function createOrderList(){
-            fetch("getPastOrders.php")
+            fetch("getPastOrders.php?c=t")
             .then(response => {
                 if(!response.ok){
                     throw new Error("Network response not ok");
