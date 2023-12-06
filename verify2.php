@@ -38,27 +38,14 @@ function verify($email, $password) {
 
                 $_SESSION['branch'] = $result['BranchID'];
 
-                echo "<br>".$_SESSION['id'];
-                if(!$_SESSION['branch']){
-                    echo "BranchID not fetched...";
-                }
-
                 if ($_SESSION['role'] == 'Manager') {
-                    echo $_SESSION['branch'];
-                    if(!$_SESSION['branch']){
-                        echo "BranchID not fetched...";
-                    }
                     header("location: manage.php");
                 }
                 else {
-                    echo $_SESSION['branch'];
-                    if(!$_SESSION['branch']){
-                        echo "BranchID not fetched...";
-                    }
                     header("location: mo1.php"); //CHANGE THIS TO STAFF LANDING PAGE
                 }
             }
-            //exit;
+            exit;
         } else {
             header("location: login.php?msg=unauth");
             exit;
