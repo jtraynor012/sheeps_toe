@@ -47,17 +47,9 @@
           margin-top: 15px;
         }
 
-
-        .carousel-card {
-            max-width: 500px; /* Adjust the maximum width as needed */
-            margin: auto;
-            padding: 20px;
-            background-color: #FFF;
+        .past-order-container {
+            background-color: #FFFFFF;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        }
-        .star-rating {
-        color: #ffd700; /* Gold color for stars */
         }
 
     </style>
