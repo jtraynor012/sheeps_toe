@@ -63,10 +63,6 @@
         <h4>Log in</h4>
     </div>
 
-    <!-- Pagination -->
-    <div class="container my-3">
-    
-    </div>
 
     <!--Login form-->
     <div class="container text-center">

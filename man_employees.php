@@ -182,11 +182,6 @@
         </div>
     </div>
 
-    <!-- Pagination -->
-    <div class="container my-3">
-        
-    </div>
-
     <div id="dom-target" style="display:none">
     <?php
         include "db.php";

@@ -141,11 +141,6 @@
     </div>
     
 
-    <!-- Pagination -->
-    <div class="container my-3">
-        
-    </div>
-
     <!-- Footer Section -->
     <footer class="bg-dark text-white text-center py-3">
         &copy; 2023 The Sheep's Toe Pub

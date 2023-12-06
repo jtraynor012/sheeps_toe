@@ -49,7 +49,7 @@
 
 
         .carousel-card {
-            max-width: 500px; /* Adjust the maximum width as needed */
+            max-width: 500px;
             margin: auto;
             padding: 20px;
             background-color: #FFF;
@@ -164,7 +164,7 @@
     <section class="container">
         <div id="reviewsCarousel" class="carousel slide" data-ride="carousel">
             <div class="carousel-inner">
-                <!-- Fetched reviews will be dynamically inserted here -->
+
             </div>
             <a class="carousel-control-prev" href="#reviewsCarousel" role="button" data-slide="prev">
                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -177,11 +177,6 @@
         </div>
     </section>
 
-
-    <!-- Pagination -->
-    <div class="container my-3">
-        
-    </div>
 
     <!-- Footer Section -->
     <footer class="bg-dark text-white text-center py-3">

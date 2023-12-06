@@ -79,11 +79,6 @@ ob_flush();
         <h4>Welcome <?php echo $_SESSION['user']?> - Manager Access</h4>
     </div>
 
-    <!-- Pagination -->
-    <div class="container my-3">
-    
-    </div>
-
     <div class="container text-center">
 
         <ul class="navbar-nav ml-auto">
@@ -104,14 +99,6 @@ ob_flush();
             </li>
         </ul>
 
-    </div>
-
-
-
-
-    <!-- Pagination -->
-    <div class="container my-3">
-        
     </div>
 
     <!-- Footer Section -->
