@@ -42,6 +42,6 @@
         ];
         echo json_encode($response);
     } catch(PDOEXception $e){
-        echo json_encode($response);
+        echo $e->getMessage();
     }
 ?>
