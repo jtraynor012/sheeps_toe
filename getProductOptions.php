@@ -11,7 +11,7 @@
         $stmt->execute();
         $result = $stmt->fetchAll();
         foreach($result as $row) {
-            $response .= $row['ProductName']."$".$row['ProductID']."<br>"; // Use .= for string concatenation
+            $response .= $row['ProductName']."$".$row['ProductID']."<br>"; 
         }
         echo $response;
     } catch (PDOException $e) {
