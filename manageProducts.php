@@ -86,7 +86,9 @@
                     if(isset($_GET['logout'])){
                         session_unset();
                     }
-                    if(!isset($_SESSION['role']) || $_SESSION['role'] != 'Manager');
+                    if(!isset($_SESSION['role']) || $_SESSION['role'] != "Manager"){
+                        header("location: login.php");
+                    }
                     echo '<li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" id="logoutDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">'.
                             $_SESSION["user"]
@@ -106,17 +108,22 @@
         <h4>Manage Products</h4>
     </div>
 
+    <div class="container my-3">
+        <a class="nav-link" href="manage.php">Go back to Manager Access</a>
+    </div>
+
     <div class="container">
         <div class="row">
-            <h3>The products here are sorted by urgency. This urgency is calculated by the current stock levels of 
+            <h4>The products here are sorted by urgency. This urgency is calculated by the current stock levels of 
                 the product against its recent sales.
-            </h3>
+            </h4>
+            <h5>Enter a positive number to increment stock, and negative number to decrement stock</h5>
         </div>
     </div>
 
     <div class="container">
         <div class="row-mt-5">
-            <ul class="product-list-container">
+            <ul id="product-list-container">
             </ul>
         </div>
     </div>
@@ -142,12 +149,55 @@
             })
             .then(data => {
                 productListContainer = document.getElementById("product-list-container");
-                data.forEach(function (product) {
-                    
+                data.forEach(function (productInfo) {
+                    var li = document.createElement("li");
+                    li.classList.add("list-group-item");
+                    const product = productInfo.StockInformation;
+                    li.innerHTML=`
+                        <p>ProductID: ${product.ProductID}</p>
+                        <p>Product Name: ${product.ProductName}</p>
+                        <p>Catgeory: ${product.ProductType}</p>
+                        <p>Amount sold this week: ${product.AmountSoldLastWeek}</p>
+                        <p>Current Stock: ${product.CurrentStock}
+                    `;
+                    // Create input field for stock adjustment
+                    var inputField = document.createElement("input");
+                    inputField.type = "number";
+                    inputField.placeholder = "Enter adjustment";
+                    li.appendChild(inputField);
+
+                    // Create button for updating stock
+                    var updateButton = document.createElement("button");
+                    updateButton.textContent = "Update Stock";
+                    updateButton.addEventListener("click", function () {
+                        // Get the adjustment value from the input field
+                        var adjustment = parseInt(inputField.value);
+
+                        
+                        fetch(`updateStock.php?quantity=${adjustment}&productID=${product.ProductID}`, {
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error("Network response was not ok");
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            setTimeout(function(){
+                                location.reload(true);
+                            }, 1000);
+                        })
+                        .catch(error => {
+                            console.error("Error:", error);
+                        });
+                    });
+
+                    li.appendChild(updateButton);
+
+                    // Append the list item to the container
+                    productListContainer.appendChild(li);
                 })
-            })
-
-
+            });
         });
     </script> 
 

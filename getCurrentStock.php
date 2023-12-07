@@ -5,7 +5,7 @@
     $response = array();
 
     try {
-        $query = "SELECT ProductID, ProductName, ProductType, AmountSoldLastWeek FROM StockQuantityView WHERE BranchID = :branchID ORDER BY UrgencyRatio DESC";
+        $query = "SELECT ProductID, ProductName, ProductType, AmountSoldLastWeek, CurrentStock FROM StockQuantityView WHERE BranchID = :branchID ORDER BY UrgencyRatio DESC";
         $stmt = $mysql->prepare($query);
         $stmt->bindParam(':branchID', $branchID, PDO::PARAM_INT);
         $stmt->execute();
@@ -16,7 +16,8 @@
                     'ProductID' => $stockInfo['ProductID'],
                     'ProductName' => $stockInfo['ProductName'],
                     'ProductType' => $stockInfo['ProductType'],
-                    'AmountSoldLastWeek' => $stockInfo['AmountSoldLastWeek']
+                    'AmountSoldLastWeek' => $stockInfo['AmountSoldLastWeek'],
+                    'CurrentStock' => $stockInfo['CurrentStock']
                 ]
             );
             $response[] = $stockQuantity;
