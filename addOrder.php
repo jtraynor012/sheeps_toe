@@ -164,6 +164,11 @@
         $orderData = json_decode($rawData,true);
         if($orderData) {
             $stringProducts = $orderData['stringProducts'];
+            if(empty($stringProducts)) {
+                echo json_encode(["status" => "error", "message" => "No items in order"]);
+                // ends program if $stringProducts is empty as why should we create an order for nothing...
+                exit;
+            }
 //            $tableNumber = $orderData['tableNumber'];
             $customerID = $orderData['customerID'];
             $branch = $orderData['branch'];
