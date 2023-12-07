@@ -182,10 +182,10 @@
     </div>
 
     <!--table number drop down select-->
-    <section class="container-fluid mt-1">
-        <div class="row mt-1">
-            <div class="col-3">
-                <label for="table-number">Table Number  </label>
+    <section class="container mt-1">
+        <div class="row">
+            <div class="col-md-4">
+                <label for="table-number">Table Number</label>
                 <h5> </h5>
                 <select id="table-number" name="table-number">
                     <option value="1">1</option>
@@ -206,7 +206,7 @@
                     <option value="16">16</option>
                 </select>
             </div>
-            <div class="col-3">
+            <div class="col-md-4">
                 <label for="branch-select">Branch</label>
                 <select id="branch-select" name="branch-select">
                     <option value="The Woolly Ram">The Wooly Ram - Dundee</option>
@@ -217,7 +217,7 @@
                     <option value="The Shepherds Spirits">The Shephards Spirits - Glasgow</option>
                 </select>
             </div>
-            <div class="col-3">
+            <div class="col-md-4">
                 <a class="nav-link" href="customerPastOrders.php">View previous orders</a>
             </div>
         </div>
