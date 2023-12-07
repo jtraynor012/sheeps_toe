@@ -117,12 +117,6 @@
         </div>
     </div>
 
-     <!-- Add a search bar -->
-     <div class="container mt-3">
-        <input type="text" id="searchInput" placeholder="Search for a product...">
-        <button onclick="searchProducts()">Search</button>
-    </div>
-
     <div class="container">
         <div class="row-mt-5">
             <ul id="product-list-container">
