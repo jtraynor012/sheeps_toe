@@ -108,6 +108,10 @@
         <h4>Manage Products</h4>
     </div>
 
+    <div class="container my-3">
+        <a class="nav-link" href="manage.php">Go back to Manager Access</a>
+    </div>
+    
     <div class="container">
         <div class="row">
             <h4>The products here are sorted by urgency. This urgency is calculated by the current stock levels of 
