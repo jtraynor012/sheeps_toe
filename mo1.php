@@ -83,7 +83,7 @@
                     <a class="nav-link" href="order.php">Order</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact.php">Contact</a>
+                    <a class="nav-link" href="contact.html">Contact</a>
                 </li>
                 <?php
                     session_start();
@@ -185,23 +185,21 @@
             orderContainer.className = 'order-container';
             
             let actionButtonsHTML = '';
-            if (status === 'In progress') {
+            if (status == 'In progress') {
                 actionButtonsHTML = `
                     <button class="btn btn-danger" onclick="voidOrder(${order.OrderID})">Void</button>
                     <button class="btn btn-success" onclick="completeOrder(${order.OrderID})">Complete</button>
                 `;
-            } else if (status === 'Voided') {
+            } else if (status == 'Voided') {
                 actionButtonsHTML = `                
-                    <button class="btn btn-primary" onclick="inProgressOrder(${order.OrderID})">Undo</button>
+                    <button class="btn btn-primary" onclick="inProgressOrder(${order.OrderID}, '${status}')">Undo</button>
                 `;
-            } else if (status === 'Completed') {
+            } else if (status == 'Completed') {
                 actionButtonsHTML = `
-                    <button class="btn btn-primary" onclick="inProgressOrder(${order.OrderID})">Undo</button>
+                    <button class="btn btn-primary" onclick="inProgressOrder(${order.OrderID}, '${status}')">Undo</button>
                 `;
             }
             
-            console.log(order.OrderId);
-            console.log(order.TableNumber);
 
 
             orderContainer.innerHTML = `
@@ -228,7 +226,7 @@
 
 
     //functions to handle order actions (complete, void)
-    function completeOrder(orderId) {
+    function completeOrder(orderId, status) {
         
         fetch('completeOrder.php', {
             method: 'POST',
@@ -237,6 +235,7 @@
             },
             body: JSON.stringify({
                 orderId: orderId,
+                status: status,
             }),
         })
         .then(response => response.json())
@@ -248,7 +247,7 @@
                 for (const orderContainer of orderContainers) {
         const orderOrderId = orderContainer.querySelector('h5').textContent.split(': ')[1]; // Assuming h5 contains "Order ID: xxx"
         
-        if (orderOrderId === orderId.toString()) {
+        if (orderOrderId == orderId.toString()) {
             orderContainer.remove();
             break; // Once the order is found and removed, exit the loop
         }
@@ -282,7 +281,7 @@
                 for (const orderContainer of orderContainers) {
                 const orderOrderId = orderContainer.querySelector('h5').textContent.split(': ')[1]; // Assuming h5 contains "Order ID: xxx"
         
-                if (orderOrderId === orderId.toString()) {
+                if (orderOrderId == orderId.toString()) {
                     orderContainer.remove();
                 break; // Once the order is found and removed, exit the loop
                 }   
@@ -297,7 +296,7 @@
     }
 
     // JavaScript functions to handle order actions (complete, void, in-progress)
-    function inProgressOrder(orderId) {
+    function inProgressOrder(orderId, status) {
         fetch('inProgressOrder.php', {
             method: 'POST',
             headers: {
@@ -305,6 +304,7 @@
             },
             body: JSON.stringify({
                 orderId: orderId,
+                status: status,                
             }),
         })
         .then(response => response.json())
@@ -316,7 +316,7 @@
                 for (const orderContainer of orderContainers) {
                     const orderOrderId = orderContainer.querySelector('h5').textContent.split(': ')[1]; // Assuming h5 contains "Order ID: xxx"
 
-                    if (orderOrderId === orderId.toString()) {
+                    if (orderOrderId == orderId.toString()) {
                         orderContainer.remove();
                         break; // Once the order is found and removed, exit the loop
                     }

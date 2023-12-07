@@ -6,6 +6,7 @@ $json_data = file_get_contents("php://input");
 $data = json_decode($json_data, true);
 $orderId = $data['orderId'];
 $orderId = intval($orderId);
+$status = $data['status'];
 
 
 // Retrieve the branch from the session
@@ -27,26 +28,21 @@ try {
         $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
         $stmt->execute();
 
-        // Fetch order products and quantities
+        // Fetch order products, quantities, and order status
         $stmt = $mysql->prepare($getOrderProductsQuery);
-        $stmt->bindParam(':orderId', $orderId);
+        $stmt->bindParam(':orderId', $orderId, PDO::PARAM_INT);
         $stmt->execute();
-        $orderProducts = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $orderData = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        // Update stock levels for each product in the order
-        //$updateStockLevelsQuery = "
-            //CALL UpdateStockLevels(:ProductID, :BranchID, :Quantity)
-        //";
+        
 
-        // Update stock levels for each product in the order
-        $updateStockLevelsQuery = "
+        foreach ($orderData as $product) {
+            $updateStockLevelsQuery = "
             UPDATE STOCK
             SET Count = Count - :quantity
             WHERE ProductID = :productId
             AND BranchID = :branchId
         ";
-
-        foreach ($orderProducts as $product) {
             $stmt = $mysql->prepare($updateStockLevelsQuery);
             $stmt->bindParam(':quantity', $product['Quantity'], PDO::PARAM_INT);
             $stmt->bindParam(':productId', $product['ProductID'], PDO::PARAM_INT);
@@ -54,6 +50,7 @@ try {
             $stmt->execute();
         }
 
+        
     // Return a success response
     echo json_encode(array('success' => true));
 } catch (PDOException $e) {
