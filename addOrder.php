@@ -169,7 +169,7 @@
                 // ends program if $stringProducts is empty as why should we create an order for nothing...
                 exit;
             }
-//            $tableNumber = $orderData['tableNumber'];
+            $tableNumber = $orderData['tableNumber'];
             $customerID = $orderData['customerID'];
             $branch = $orderData['branch'];
             $branchID = getBranchFromName($branch,$mysql);
