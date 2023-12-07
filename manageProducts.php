@@ -79,7 +79,7 @@
                     <a class="nav-link" href="order.php">Order</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="contact.html">Contact</a>
+                    <a class="nav-link" href="contact.php">Contact</a>
                 </li>
                 <?php
                     session_start();
@@ -108,10 +108,6 @@
         <h4>Manage Products</h4>
     </div>
 
-    <div class="container my-3">
-        <a class="nav-link" href="manage.php">Go back to Manager Access</a>
-    </div>
-
     <div class="container">
         <div class="row">
             <h4>The products here are sorted by urgency. This urgency is calculated by the current stock levels of 
@@ -119,6 +115,12 @@
             </h4>
             <h5>Enter a positive number to increment stock, and negative number to decrement stock</h5>
         </div>
+    </div>
+
+     <!-- Add a search bar -->
+     <div class="container mt-3">
+        <input type="text" id="searchInput" placeholder="Search for a product...">
+        <button onclick="searchProducts()">Search</button>
     </div>
 
     <div class="container">
@@ -198,6 +200,8 @@
                     productListContainer.appendChild(li);
                 })
             });
+
+
         });
     </script> 
 
